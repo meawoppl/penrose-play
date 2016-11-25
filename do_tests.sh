@@ -1,0 +1,1 @@
+PYTHONPATH=. nosetests -xs -w pypenrose
