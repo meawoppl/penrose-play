@@ -1,18 +1,18 @@
 import numpy as np
 
 
-def generate_starting_vectors():
+def get_pentagon_points():
     t = np.linspace(0, 2 * np.pi, 5)
     xs = np.cos(t)
     ys = np.sin(t)
     return (xs, ys)
 
 
-def get_basis_grid(n_lines, offsets=[0, 0, 0, 0, 0]):
+def get_line_groups(n_lines, offsets=[0, 0, 0, 0, 0]):
     offsets = np.asarray(offsets)
     eqs = {}
 
-    xs, ys = generate_starting_vectors()
+    xs, ys = get_pentagon_points()
     for xd, yd, offset in zip(xs, ys, offsets):
         eqs[xd, yd] = np.arange(n_lines) - offset
     return eqs
