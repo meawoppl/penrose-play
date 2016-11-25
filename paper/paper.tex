@@ -1,0 +1,146 @@
+\documentclass{amsart}
+\usepackage[lite]{amsrefs}
+% \usepackage{amssymb}
+\usepackage{graphicx}
+
+\begin{document}
+
+\title{A Super--quasicrystal of Penrose Tilings with $C_1$ Symmetry}
+\author[MR Goodman]{Matthew Goodman}
+\address{3Scan \\ 2122 Bryant \\ San Francisco CA, 94110}
+\email{matt@3scan.com}
+
+\date{\today}
+
+\begin{abstract}
+	abstract Stuffs here
+\end{abstract}
+
+\maketitle
+
+\section{Introduction}
+The study of aperiodic tilings has anchient origins beginning with Johannes Kepplers (incomplete) Aa
+pattern. TODO CITEME  This work languished in relative obscurity until the work of Roger Penrose\cite{penrose1979set, penrose1979pentaplexity} found a set of matching rules which allowed this pattern to extend outward 
+indefinately.
+
+These tilings were further analyzed and placed in algebraic frame by the work of 
+Nicolaas Govert de Bruijn, which established both mechanisims for generation of the 
+original Penrose tilings, as well as an innfinite number of other embodiments.\cite{de1981algebraic1, de1981algebraic2}
+Within this work it was established that Penrose tiles were two dimensional ``shadows'' of
+a 5 dimensional lauttice viewed which:
+\begin{enumerate}
+	\item Is viewed at an isometric angle wrt. to the 2d plane it is projected into.
+	\item The basis of the grid is shifted in with a basis that obeys that form independent
+	basis under the operation of integer multiplication? (Ackward wording here.) 
+\end{enumerate}
+
+A visual representation of this form is seen in Figure \ref{fig:pentagrid-basis}.
+
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=0.4\linewidth]{figures/placeholder}
+  \includegraphics[width=0.4\linewidth]{figures/placeholder}
+  \caption{Left: Pentagrid basis vectors  Right: Pentagrid Lines coloring keyed to basis vectors from the left hand figure.}
+  \label{fig:pentagrid-basis}
+\end{figure}
+
+
+Penrose tiles are the opposite. They maintain the confusing position of looking predictable close-up, but 
+from a suitable distance, have no order. They are an embodiment of irrationality rendered in 2d form. 
+Much like pi or e they contain the works of Shakespere somewhere yet unseen if only the viewer looked deeply enough. Here are a couple of 
+examples of renderings of them:
+These are a recent discovery. Their discoverer, Roger Penrose is a brilliant mathematical mind, and 
+even better illustrator of mathematical concepts. The first of these P1 was discovered “following Kepler’s method,”
+which believe is math-code for doodled on a cocktail napkin. It is very striking in its original form:
+
+
+Recently the understanding of Penrose Tilings has been greatly enhanced. Work in 1981 by a mathematician 
+named Nicolaas Govert de Bruijn revealed two big results. First, he revealed that there are an infinite
+number of Penrose tilings. This was unexpected, especially so when contrasted with the 17 regular tilings.
+The second major discovery was that these tilings could be generated from the most regular geometric structure
+out there, a grid, provided it lived in 5 dimensions and was viewed at the correct angle. Neither one of these
+results are particularly obvious, so lets break them up a little bit, and talk through them.
+
+Now, the important question I think we all have here is WTF does it mean to be a 5 dimensional grid? 
+Well, that tricky quantity, we have some sense of stacked sugar cubes making a 3 dimensional grid, but as we seek 
+to pull them out in the “next” dimension, we discover we have already used the 3 we know how to visualize. Tricky. 
+
+We do however know that the pattern we are forming lives in the 2d plane. If you look at a cube straight at one 
+of its 6 faces its ``shadow'' will form a square. This is true also for a 5d-cube, just from 80 directions instead. 
+
+Ouch.
+
+The particular we need to cast our shadow to get a Penrose tiling is thankfullly easy to motivate. In 3d,
+it is starting straight into the box corner, or isometric, meaning a step in any axis will take us the same
+distance in our shadow space. The 3d and 5d coordinate system’s axis shadow look like the following:
+
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=0.8\linewidth]{figures/placeholder}
+  \caption{Axis Shadow Rendering}
+  \label{fig:axis-shadow}
+\end{figure}
+
+Simple right? Now, here is how we get from this silly looking grid to the good stuff. Each intersection of two
+lines is a tile. The shape of the tile is governed by the geometry of the neighboring points. Here is an example
+with tiles shrunk for clarity:
+
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=0.8\linewidth]{figures/placeholder}
+  \caption{Rendering of tiles seen by use of de Bruijn's method.}
+  \label{fig:db-vis}
+\end{figure}
+
+The only caveat is what do we do if more than two lines intersect at one place? Well, simply put we don’t let that happen in order to accomplish this all we have to do is shift the origin of the coordinate system in a way to make that impossible. Recall we are living in an isometric space, this means to avoid collision we need to make sure our meters are mutually non interchangable. This is simpler than it sounds, here is an example:
+\begin{equation}
+ \left[1, \sqrt{2}, \sqrt{3}, \sqrt{5}, \sqrt{7}\right]
+ \label{eq:punt}
+\end{equation}
+
+\begin{equation}
+ \left[1, \sqrt{2}, \sqrt{3}, \sqrt{5}, \sqrt{7}\right]
+ \label{eq:pr_1}
+\end{equation}
+
+\begin{equation}
+ \left[1, \sqrt{2}, \sqrt{3}, \sqrt{5}, \sqrt{7}\right]
+ \label{eq:pr_2}
+\end{equation}
+
+\begin{equation}
+ \left[1, \sqrt{2}, \sqrt{3}, \sqrt{5}, \sqrt{7}\right]
+ \label{eq:pr_3}
+\end{equation}
+
+There is no way to multiply any of these by integer quantaties and arrive at the same number. Thats all there is to it! Lets take a break and look at some tilings:
+
+
+Here is where the fun part comes in. struck by the similarities and differences of these tilings, and the people I
+associate with them, I wondered what it would be like to be some sort of intermediate tiling, and if such a thing 
+were well defined. It turns out, it is! A good chunk of the new discovery I have done in this space boils down to
+the fact that for most pairs of Penrose Tilings there exist an intermediate form which is also a Penrose tiling.
+This averaging process holds, and allows us to form further intermediates up to a continuum of tilings. Neat! 
+
+I set about trying to visualize this in some form. My initial work was to make videos where subsequent time points were
+the result of moving between two tilings. You can seem some of them TODO Link. While this is an easy approach, I didn’t
+find the results particularly satisfying. Fundamentally we are adding a dimension to the visualization, which feels like
+cheating.
+
+
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=0.8\linewidth]{figures/placeholder}
+  \caption{Super-Quasicrystal tiling}
+  \label{fig:gm-tiling}
+\end{figure}
+
+Here are some neat things about this tiling that I am working to prove:
+\begin{enumerate}
+	\item Every single tile is unique, that is to say in addition to there being all the same trappings of irrational character, the individual tiles themselves embody this character.
+	\item It has only S1 symmetry. That is to say, there is no way in which it can be rotated or reflected to see itself. Penrose tilings feature a single D5 symmetry point meaning that the center can be rotated/reflected in 5 ways.
+	\item Each vector that starts from the center represents a Penrose tiling. That is to say that rolled into this figure is an infinite number of tilings and an analagous way to Mandlebrot/Julia-set pairings. This diagram contains all three canonical Penrose Tilings in a compressed form.
+\end{enumerate}
+
+\bibliography{paper.bib}
+\end{document}
