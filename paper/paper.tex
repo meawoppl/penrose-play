@@ -19,20 +19,76 @@
 \maketitle
 
 \section{Introduction}
-The study of aperiodic tilings has anchient origins beginning with Johannes Kepplers (incomplete) Aa
-pattern. TODO CITEME  This work languished in relative obscurity until the work of Roger Penrose\cite{penrose1979set, penrose1979pentaplexity} found a set of matching rules which allowed this pattern to extend outward 
-indefinately.
+The study of aperiodic tilings has anchient origins beginning with Johannes Keppler's (incomplete) Aa
+pattern. TODO CITEME  This work languished in relative obscurity until the work of Roger Penrose\cite{penrose1979pentaplexity}
+found a set of matching rules which allowed this pattern to extend outward 
+indefinately. Three emboidments of this pattern were cited in the initial patent application by Penrose\cite{penrose1979set},
+but subsequent work revealed two of these patterns as duals.
 
 These tilings were further analyzed and placed in algebraic frame by the work of 
 Nicolaas Govert de Bruijn, which established both mechanisims for generation of the 
-original Penrose tilings, as well as an innfinite number of other embodiments.\cite{de1981algebraic1, de1981algebraic2}
-Within this work it was established that Penrose tiles were two dimensional ``shadows'' of
-a 5 dimensional lauttice viewed which:
+original Penrose tilings, as well as an infinite number of other embodiments.\cite{de1981algebraic1, de1981algebraic2}
+
+These patterns would later be shown to be "quasicrystals" as they generate coherent Bragg 
+diffcationion patterns under.  This means that they have a form of short range order than can
+be seen in Fourier space.\cite{de1986quasicrystals} 
+
+\section{Background Information}
+We will start by reviewing the computational steps needed to be undertaken to generate a Penrose Tiling
+with de Bruijn's methods.  These are somewhat complex, and to the knowledge of the author the supporting
+software package represents the only open-source modular implementation.
+
+The overall steps are as follows and will be broken down in increased detail in subsequent subsections:
 \begin{enumerate}
-	\item Is viewed at an isometric angle wrt. to the 2d plane it is projected into.
-	\item The basis of the grid is shifted in with a basis that obeys that form independent
-	basis under the operation of integer multiplication? (Ackward wording here.) 
+  \item Select the magnitude of 5 bias vectors with specific restrictions.
+  \item Establish a 2d isometric projection of the host 5d coordinate system.
+  \item Draw $n$ gridlines perpendicular to each of these basis
+  \item Compute the $10n^2$ intersections of these gridlines.
+  \item Inspect each intersection and deteermine the tile shape and location to be drawn
 \end{enumerate}
+\subsection{Bias Vector Selection}
+The selection of the bias vector determines in totality the form of a particular Penrose Tiling.
+There is an important restriction that must be obeyed in the selection of these terms, namely that
+the quotient of any two terms ($m$, $n$) must be an irrational number. 
+
+(MRG NOTE: Irrational or non-real? this can also be expressed with a multaplicative identity.)
+
+The original bias vector for Penrose's first tiling is given by:
+\begin{equation}
+  b_{p1}
+  =
+  \left[
+     1, 
+     \frac{\sqrt{5} - 1}{2},
+     \frac{\sqrt{5} + 1}{2},
+    -\frac{\sqrt{5} - 1}{2},
+    -\frac{\sqrt{5} + 1}{2}
+  \right]
+\end{equation}
+(MRG NOTE: Can I cite my own Stackoverflow question on this? I recall there being a helpful thesis link...)
+
+Another simple bias vector we will use later is given by successive square roots of prime numbers:
+
+\begin{equation}
+ \left[1, \sqrt{2}, \sqrt{3}, \sqrt{5}, \sqrt{7}\right]
+ \label{eq:punt}
+\end{equation}
+
+
+
+\subsection{}
+There are TODO large steps to this 
+There are  that Penrose tiles were two dimensional ``shadows'' of
+a 5 dimensional lautice which:
+\begin{enumerate}
+  \item is projected from an isometric viewpoint -- where each axis entertains equal meter 
+  as each other following projection projected into the 2d space
+  \item The origin of the grid within the host coordinate, when projected into 2d, has offset such that no two vector
+  components entertain a rational ratio. Otherwise state  of the grid is shifted in with a basis that obeys that form independent
+  basis under the operation of integer multiplication? (Ackward wording here.) 
+\end{enumerate}
+
+The bias vector associated with the first Penrose tiling, P1 is as follows:
 
 A visual representation of this form is seen in Figure \ref{fig:pentagrid-basis}.
 
@@ -40,16 +96,10 @@ A visual representation of this form is seen in Figure \ref{fig:pentagrid-basis}
   \centering
   \includegraphics[width=0.4\linewidth]{figures/placeholder}
   \includegraphics[width=0.4\linewidth]{figures/placeholder}
-  \caption{Left: Pentagrid basis vectors  Right: Pentagrid Lines coloring keyed to basis vectors from the left hand figure.}
+  \caption{Left: Pentagrid basis vectors. To be thought of as a corner of a 5-dimensional box pointing away from the viewer.  Right: Pentagrid Lines coloring keyed to basis vectors from the left hand figure.}
   \label{fig:pentagrid-basis}
 \end{figure}
 
-
-
-\begin{equation}
- \left[1, \sqrt{2}, \sqrt{3}, \sqrt{5}, \sqrt{7}\right]
- \label{eq:punt}
-\end{equation}
 
 
 \section{Background Information}
