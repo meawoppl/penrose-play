@@ -15,7 +15,11 @@ class Line:
 
     @classmethod
     def from_two_points(cls, px1, py1, px2, py2):
-        m = (py2 - py1) / (px2 - px1)
+        try:
+            m = (py2 - py1) / (px2 - px1)
+        except ZeroDivisionError:
+            m = float("inf")
+
         return cls.from_point_slope(px1, py1, m)
 
     @classmethod
@@ -28,6 +32,7 @@ class Line:
         return cls(-m, 1, (-m * px) + py)
 
     def __eq__(self, other):
+        # MRG NOTE this is wrong!!!
         try:
             self.intersect(other)
         except Colinear:
