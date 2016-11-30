@@ -3,7 +3,7 @@ import itertools
 import nose.tools
 import numpy as np
 
-from pypenrose.line import Colinear
+from pypenrose.line import Parallel
 import pypenrose.space as space
 
 
@@ -19,6 +19,12 @@ def test_basis_vecs():
 def test_gridlines():
     gl_list = space.get_1d_gridlines((0.5, 0.5), 0.0, 5)
 
+    # All lines inside this list should be parallel
     for l1, l2 in itertools.permutations(gl_list, 2):
-        with nose.tools.assert_raises(Colinear):
+        with nose.tools.assert_raises(Parallel):
             l1.intersect(l2)
+
+
+def test_line_list_generation():
+    for ndim in range(5):
+        space.get_nd_grid(1, ndim=ndim)

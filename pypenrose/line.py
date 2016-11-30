@@ -1,7 +1,11 @@
 import numpy as np
 
 
-class Colinear(RuntimeError):
+class Parallel(RuntimeError):
+    pass
+
+
+class Colinear(Parallel):
     pass
 
 
@@ -16,7 +20,7 @@ class Line:
     @classmethod
     def from_two_points(cls, px1, py1, px2, py2):
         try:
-            m = (py2 - py1) / (px2 - px1)
+            m = float(py2 - py1) / float(px2 - px1)
         except ZeroDivisionError:
             m = float("inf")
 
@@ -31,25 +35,39 @@ class Line:
         # -m (x)  + y = - m (px) + py
         return cls(-m, 1, (-m * px) + py)
 
+    def _vec(self):
+        return np.asarray([self.x, self.y, self.i])
+
+    # MRG TODO: Testme
+    def parallel(self, other, eps=1e-6):
+        # Compute the angle b/t the lines
+        dot_prod = (self.x * other.x) + (self.y * other.y)
+        s_mag = np.sqrt(self.x**2 + self.y**2)
+        o_mag = np.sqrt(other.x**2 + other.y**2)
+
+        # Constrain angle to q1 with abs
+        deg = np.arccos(abs(dot_prod) / (s_mag * o_mag))
+        return (abs(deg) < eps)
+
+    def normalized(self):
+        n = np.max(np.abs(self._vec()))
+        n *= np.sign(self.x)
+        return Line(self.x / n, self.y / n, self.i / n)
+
+    def equal(self, other, eps=1e-6):
+        self_norm = self.normalized()._vec()
+        othr_norm = other.normalized()._vec()
+
+        return np.allclose(self_norm, othr_norm, atol=eps)
+
     def __eq__(self, other):
-        # MRG NOTE this is wrong!!!
-        try:
-            self.intersect(other)
-        except Colinear:
-            return True
-        return False
+        return self.equal(other)
 
     def y_at(self, x_v):
         return Line(1, 0, x_v).intersect(self)[1]
 
     def x_at(self, y_v):
         return Line(0, 1, y_v).intersect(self)[0]
-
-    def add_to_plot(plt, extents=(-10, 10, -10, 10)):
-        # Determine the plot extents
-        # Determing where to draw lines within those extents
-        # Draw the lines
-        pass
 
     def intersect(self, othr):
         assert isinstance(othr, Line)
@@ -61,7 +79,7 @@ class Line:
         try:
             inv = mat.I
         except np.linalg.linalg.LinAlgError as e:
-            raise Colinear() from e
+            raise Parallel() from e
 
         # Gross cohersion to tuple(x, y)
         return tuple(np.array((inv * vec)).flatten().tolist())

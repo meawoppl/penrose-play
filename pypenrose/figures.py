@@ -1,5 +1,11 @@
-from pypenrose.space import get_nd_basis
+import itertools
+import warnings
+
+import numpy as np
 import pylab as plt
+
+from pypenrose.line import Parallel
+from pypenrose.space import get_nd_basis
 
 
 def draw_basis_figure(colors=["#FF9977", "brown", "red", "yellow", "green"]):
@@ -16,7 +22,34 @@ def draw_three_and_five():
     draw_basis_figure(["black"] * 3)
 
 
-if __name__ == "__main__":
-    plt.figure()
-    draw_three_and_five()
-    plt.show()
+def plot_line_inside_bounds(line, extents=[-10, 10, -10, 10], *plt_args, **plt_kwargs):
+    pts = set()
+
+    # X extents
+    for extent in extents[0:2]:
+        try:
+            pt = line.y_at(extent)
+        except Parallel:
+            continue
+        if pt >= extents[2] and pt <= extents[3]:
+            pts.add((extent, pt))
+
+    # y extents
+    for extent in extents[2:4]:
+        try:
+            pt = line.x_at(extent)
+        except Parallel:
+            continue
+        if pt >= extents[0] and pt <= extents[1]:
+            pts.add((pt, extent))
+
+    if len(pts) < 2:
+        warnings.warn("Line outside of copping box")
+        print(pts)
+
+    # MRG NOTE: THere is a possability of >2 points (machine eps, so we just draw all the possabilites, and assume they cant be seen)
+
+    for pair in itertools.permutations(pts, 2):
+        aray = np.asarray(list(pts))
+        plt.plot(aray.T, *plt_args, **plt_kwargs)
+    plt.axis("equal")

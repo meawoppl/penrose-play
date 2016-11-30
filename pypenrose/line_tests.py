@@ -1,6 +1,6 @@
 import nose.tools
 
-from pypenrose.line import Line, Colinear
+from pypenrose.line import Line, Parallel
 
 
 def test_line_init():
@@ -26,7 +26,7 @@ def test_line_init_invalid():
         Line(0, float("nan"), 0)
 
 
-def test_line_intercept():
+def test_line_intersect():
     line1 = Line(0, 1, 1)
     line2 = Line(1, 0, 1)
 
@@ -34,18 +34,18 @@ def test_line_intercept():
     nose.tools.assert_equal(i1, (1, 1))
 
 
-def test_line_intersect():
+def test_line_intersect_colinear():
     line1 = Line(0, 1, 1)
 
-    with nose.tools.assert_raises(Colinear):
+    with nose.tools.assert_raises(Parallel):
         line1.intersect(line1)
 
     line3 = Line(1, -1, 1)
     line4 = Line(-1, 1, -1)
-    with nose.tools.assert_raises(Colinear):
+    with nose.tools.assert_raises(Parallel):
         line3.intersect(line4)
 
-    with nose.tools.assert_raises(Colinear):
+    with nose.tools.assert_raises(Parallel):
         line4.intersect(line3)
 
 
@@ -72,6 +72,12 @@ def test_eq_operator():
 
     assert line3 != line4
 
+    # Parallel but not equal
+    line5 = Line(1, 1, 1)
+    line6 = Line(1, 1, 2)
+
+    assert line5 != line6
+
 
 def test_alt_constructors():
     line1 = Line.from_point_slope(0, 0, 1)
@@ -80,3 +86,6 @@ def test_alt_constructors():
     assert line1 == line2
 
     assert Line(1, 0, 1) == Line.from_point_slope(1, 0, float("inf"))
+
+    line3 = Line.from_two_points(0.0, 0.0, 0.0, -1.0)
+
