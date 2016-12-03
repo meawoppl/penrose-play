@@ -1,4 +1,3 @@
-import itertools
 import warnings
 
 import numpy as np
@@ -31,7 +30,7 @@ def plot_line_inside_bounds(line, extents=[-10, 10, -10, 10], *plt_args, **plt_k
             pt = line.y_at(extent)
         except Parallel:
             continue
-        if pt >= extents[2] and pt <= extents[3]:
+        if pt > extents[2] and pt < extents[3]:
             pts.add((extent, pt))
 
     # y extents
@@ -43,13 +42,11 @@ def plot_line_inside_bounds(line, extents=[-10, 10, -10, 10], *plt_args, **plt_k
         if pt >= extents[0] and pt <= extents[1]:
             pts.add((pt, extent))
 
-    if len(pts) < 2:
-        warnings.warn("Line outside of copping box")
+    if len(pts) != 2:
+        warnings.warn("Line outside of cropping box")
         print(pts)
+        return
 
-    # MRG NOTE: THere is a possability of >2 points (machine eps, so we just draw all the possabilites, and assume they cant be seen)
-
-    for pair in itertools.permutations(pts, 2):
-        aray = np.asarray(list(pts))
-        plt.plot(aray.T, *plt_args, **plt_kwargs)
-    plt.axis("equal")
+    aray = pt1, pt2 = np.asarray(list(pts))
+    plt.plot(aray[0, :], aray[1, :], *plt_args, **plt_kwargs)
+    plt.axis(extents)
