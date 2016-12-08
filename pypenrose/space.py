@@ -13,18 +13,6 @@ def get_nd_basis(n=5):
     return [(x, y) for x, y in zip(xs, ys)]
 
 
-def get_nd_grid(n_lines, ndim=5, offsets=None):
-    if offsets is None:
-        offsets = [0.0] * ndim
-
-    lines_lists = []
-    for basis, offset in zip(get_nd_basis(n=ndim), offsets):
-        lines = get_1d_gridlines(basis, offset, n_lines)
-        lines_lists.append(lines)
-
-    return lines_lists
-
-
 def get_1d_gridlines(xy, offset, line_count):
     assert (0 <= offset) and (offset <= 1)
 
@@ -40,3 +28,15 @@ def get_1d_gridlines(xy, offset, line_count):
 
         lines.append(Line.from_two_points(x1, y1, x2, y2))
     return lines
+
+
+def get_nd_grid(n_lines, ndim=5, offsets=None):
+    if offsets is None:
+        offsets = [0.0] * ndim
+
+    lines_lists = []
+    for basis, offset in zip(get_nd_basis(n=ndim), offsets):
+        lines = get_1d_gridlines(basis, offset, n_lines)
+        lines_lists.append(lines)
+
+    return lines_lists
