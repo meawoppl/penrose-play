@@ -1,1 +1,1 @@
-PYTHONPATH=. nosetests -xs -w pypenrose
+PYTHONPATH=. nosetests -vxs -w pypenrose
