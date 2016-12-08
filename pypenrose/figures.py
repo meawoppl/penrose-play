@@ -48,5 +48,5 @@ def plot_line_inside_bounds(line, extents=[-10, 10, -10, 10], *plt_args, **plt_k
         return
 
     aray = pt1, pt2 = np.asarray(list(pts))
-    plt.plot(aray[0, :], aray[1, :], *plt_args, **plt_kwargs)
+    plt.plot(aray[:, 0], aray[:, 1], *plt_args, **plt_kwargs)
     plt.axis(extents)
