@@ -46,8 +46,8 @@ class Line:
         o_mag = np.sqrt(other.x**2 + other.y**2)
 
         # Constrain angle to q1 with abs
-        deg = np.arccos(abs(dot_prod) / (s_mag * o_mag))
-        return (abs(deg) < eps)
+        deg = abs(dot_prod) / (s_mag * o_mag)
+        return ((1 - abs(deg)) < eps)
 
     def normalized(self):
         n = np.max(np.abs(self._vec()))
@@ -71,6 +71,9 @@ class Line:
 
     def intersect(self, othr):
         assert isinstance(othr, Line)
+        if self.parallel(othr):
+            raise Parallel()
+
         mat = np.matrix(
             [[self.x, self.y],
              [othr.x, othr.y]])

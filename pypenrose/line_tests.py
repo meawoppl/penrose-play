@@ -1,5 +1,7 @@
 import nose.tools
 
+import numpy as np
+
 from pypenrose.line import Line, Parallel
 
 
@@ -49,6 +51,15 @@ def test_line_intersect_colinear():
         line4.intersect(line3)
 
 
+def test_line_intersect_parallel_harder():
+    line1 = Line(1.38, 1.00, -0.00)
+
+    for incr in np.linspace(0, 0.000000001, 100):
+        with nose.tools.assert_raises(Parallel):
+            line2 = Line(1.38 + incr, 1.00, 0.0)
+            line1.intersect(line2)
+
+
 def test_line_string():
     line1 = Line(1, 1, 1)
     assert str(line1) == "Line: 1.00x + 1.00y = 1.00"
@@ -88,4 +99,7 @@ def test_alt_constructors():
     assert Line(1, 0, 1) == Line.from_point_slope(1, 0, float("inf"))
 
     line3 = Line.from_two_points(0.0, 0.0, 0.0, -1.0)
+    line4 = Line.from_two_points(0.0, 0.0, 0.0, 1.0)
 
+    with nose.tools.assert_raises(Parallel):
+        line3.intersect(line4)
