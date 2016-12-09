@@ -70,3 +70,17 @@ def test_grid_properties_offset():
     for g1, g2 in itertools.permutations(groups, 2):
         for l1, l2 in itertools.product(g1, g2):
             l1.intersect(l2)
+
+
+def test_grid_properties_offset_p1():
+    groups = space.get_nd_grid_p1(6)
+
+    # All lines with a group should be parallel.
+    for n, group in enumerate(groups):
+        assert_all_lines_parallel(group)
+
+    # Each line from each group should interesect with
+    # each line from each other group
+    for g1, g2 in itertools.permutations(groups, 2):
+        for l1, l2 in itertools.product(g1, g2):
+            l1.intersect(l2)
