@@ -1,13 +1,14 @@
 import numpy as np
 
-from pypenrose.line import Line
+from pypenrose.line import Line, Parallel
 
 
 def get_nd_basis(n=5):
     """
     Generate the basis vectors for a n-dimensional grid viewed isometrically.
     """
-    t = np.linspace(0, 2 * np.pi, n + 1)
+    assert n >= 0
+    t = np.linspace(0, 2 * np.pi, n + 1)[:-1]
     xs = np.cos(t)
     ys = np.sin(t)
     return [(x, y) for x, y in zip(xs, ys)]
@@ -52,11 +53,32 @@ def get_nd_grid_p1(n_lines):
 
     return get_nd_grid(n_lines, ndim=5, offsets=v)
 
+
+def dense_intersection(lines1, lines2):
+    out_shape = (2, len(lines1), len(lines2))
+    output = np.zeros(out_shape, dtype=np.float64)
+
+    for lid1, line1 in enumerate(lines1):
+        for lid2, line2 in enumerate(lines2):
+            if lid2 < lid1:
+                continue
+            try:
+                result = line1.intersect(line2)
+            except Parallel:
+                result = (np.nan, np.nan)
+
+            output[:, lid1, lid2] = result
+            output[:, lid2, lid1] = result
+
+    return output
+
+
 # def intersect_all_gridlines(line_sets):
 #     assert len(line_sets) >= 0
 
-#     for id1, set1 in enumerate(line_sets):
-#         for id2, set2 in enumerate(line_sets):
+#     for gid1, set1 in enumerate(line_sets):
+#         for gid2, set2 in enumerate(line_sets):
 #             # Only do the upper diag
-#             if id2 <= id1:
+#             if gid2 <= gid1:
 #                 continue
+#             dense_intersection(set1, set2)

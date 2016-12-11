@@ -26,8 +26,9 @@ def assert_all_lines_intersect(line_list):
 
 
 def test_basis_vecs():
-    for x in range(100):
-        basis = space.get_nd_basis(x)
+    for n_vecs in range(1, 100):
+        basis = space.get_nd_basis(n_vecs)
+        nose.tools.assert_equal(len(basis), n_vecs)
 
         # Test unitary length
         extent = (np.asarray(basis)**2).sum(axis=1)
@@ -41,7 +42,8 @@ def test_gridlines():
 
 def test_line_list_generation():
     for ndim in range(5):
-        space.get_nd_grid(1, ndim=ndim)
+        grid_sets = space.get_nd_grid(1, ndim=ndim)
+        nose.tools.assert_equal(len(grid_sets), ndim)
 
 
 def test_grid_properties():
@@ -84,3 +86,20 @@ def test_grid_properties_offset_p1():
     for g1, g2 in itertools.permutations(groups, 2):
         for l1, l2 in itertools.product(g1, g2):
             l1.intersect(l2)
+
+
+def test_dense_intersection():
+    line_count = 10
+    xlines, ylines = space.get_nd_grid(line_count, ndim=2)
+
+    xs, ys = space.dense_intersection(xlines, ylines)
+
+    assert xs.shape == (line_count, line_count)
+    assert ys.shape == (line_count, line_count)
+
+    # Self intersection should result in a nan filled trace
+    for idx in range(xs.shape[0]):
+        assert np.isnan(xs[idx, idx])
+        assert np.isnan(ys[idx, idx])
+
+    print(xs)

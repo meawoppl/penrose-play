@@ -12,7 +12,7 @@ gl_list = space.get_1d_gridlines((0.5, 0.5), 0.0, 5)
 # plt.show()
 
 
-linesets = space.get_nd_grid(5, ndim=5)
+linesets = space.get_nd_grid(5, ndim=2)
 
 for lineset in linesets:
     for line in lineset:
