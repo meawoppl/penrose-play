@@ -10,6 +10,8 @@ class Colinear(Parallel):
 
 
 class Line:
+    # Note for FM: This whole class is a way to dodge using Mobius coordinates
+    # when we need to make the jump to ND-line geom, it should be written as such
     def __init__(self, x, y, i):
         assert np.all(np.isfinite((x, y, i))), "Not valid value for line"
         assert (x != 0) or (y != 0), "Not a valid equation"
@@ -38,7 +40,6 @@ class Line:
     def _vec(self):
         return np.asarray([self.x, self.y, self.i])
 
-    # MRG TODO: Testme
     def parallel(self, other, eps=1e-6):
         # Compute the angle b/t the lines
         dot_prod = (self.x * other.x) + (self.y * other.y)
