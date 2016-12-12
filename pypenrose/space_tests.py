@@ -89,17 +89,20 @@ def test_grid_properties_offset_p1():
 
 
 def test_dense_intersection():
-    line_count = 10
+    line_count = 9
     xlines, ylines = space.get_nd_grid(line_count, ndim=2)
 
+    # Intersect all the parallel lines.
+    # Easy to test, none should intersect
+    xys = space.dense_intersection(xlines, xlines)
+
+    assert xys.shape == (2, line_count, line_count)
+    assert np.all(np.isnan(xys))
+
+    # The above should make unitary gridlines, so lets check them
     xs, ys = space.dense_intersection(xlines, ylines)
 
-    assert xs.shape == (line_count, line_count)
-    assert ys.shape == (line_count, line_count)
-
-    # Self intersection should result in a nan filled trace
-    for idx in range(xs.shape[0]):
-        assert np.isnan(xs[idx, idx])
-        assert np.isnan(ys[idx, idx])
-
-    print(xs)
+    # Self intersection should hit integer intersections for this pair
+    for indx in range(0, line_count):
+        assert np.allclose(xs[indx, :], indx - 4)
+        assert np.allclose(ys[:, indx], indx - 4)

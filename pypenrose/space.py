@@ -8,7 +8,7 @@ def get_nd_basis(n=5):
     Generate the basis vectors for a n-dimensional grid viewed isometrically.
     """
     assert n >= 0
-    t = np.linspace(0, 2 * np.pi, n + 1)[:-1]
+    t = np.linspace(0, np.pi, n + 1)[:-1]
     xs = np.cos(t)
     ys = np.sin(t)
     return [(x, y) for x, y in zip(xs, ys)]
@@ -60,15 +60,12 @@ def dense_intersection(lines1, lines2):
 
     for lid1, line1 in enumerate(lines1):
         for lid2, line2 in enumerate(lines2):
-            if lid2 < lid1:
-                continue
             try:
                 result = line1.intersect(line2)
             except Parallel:
                 result = (np.nan, np.nan)
 
             output[:, lid1, lid2] = result
-            output[:, lid2, lid1] = result
 
     return output
 
