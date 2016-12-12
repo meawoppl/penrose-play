@@ -95,7 +95,6 @@ def test_alt_constructors():
     line2 = Line.from_two_points(0, 0, 1, 1)
 
     assert line1 == line2
-
     assert Line(1, 0, 1) == Line.from_point_slope(1, 0, float("inf"))
 
     line3 = Line.from_two_points(0.0, 0.0, 0.0, -1.0)
@@ -103,3 +102,20 @@ def test_alt_constructors():
 
     with nose.tools.assert_raises(Parallel):
         line3.intersect(line4)
+
+
+def test_closest_point_to():
+    line1 = Line.from_two_points(0, 0, 1, 1)
+    ptx, pty = line1.closest_point_to(0, 1)
+
+    assert np.allclose([ptx, pty], 0.5)
+
+
+def test_distance_to():
+    line1 = Line.from_two_points(0, 0, 1, 1)
+
+    for i in range(5):
+        assert np.allclose(line1.distance_to(i, i), 0)
+
+    assert np.allclose(line1.distance_to(1, 0), np.sqrt(2) / 2)
+    assert np.allclose(line1.distance_to(0, 1), np.sqrt(2) / 2)

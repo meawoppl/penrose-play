@@ -11,7 +11,7 @@ class Colinear(Parallel):
 
 class Line:
     # Note for FM: This whole class is a way to dodge using Mobius coordinates
-    # when we need to make the jump to ND-line geom, it should be written as such
+    # when we need to make the jump to ND-line geom, it should be rewritten as such
     def __init__(self, x, y, i):
         assert np.all(np.isfinite((x, y, i))), "Not valid value for line"
         assert (x != 0) or (y != 0), "Not a valid equation"
@@ -64,11 +64,29 @@ class Line:
     def __eq__(self, other):
         return self.equal(other)
 
+    def x_at(self, y_v):
+        return Line(0, 1, y_v).intersect(self)[0]
+
     def y_at(self, x_v):
         return Line(1, 0, x_v).intersect(self)[1]
 
-    def x_at(self, y_v):
-        return Line(0, 1, y_v).intersect(self)[0]
+    def closest_point_to(self, x, y):
+        # https://en.wikipedia.org/wiki/Distance_from_a_point_to_a_line#Line_defined_by_an_equation
+        a = self.x
+        b = self.y
+        c = -self.i
+
+        denom = a**2 + b**2
+
+        xi = (b * (+b * x - a * y) - (a * c)) / denom
+        yi = (a * (-b * x + a * y) - (b * c)) / denom
+
+        return xi, yi
+
+    def distance_to(self, x, y):
+        px, py = self.closest_point_to(x, y)
+
+        return np.sqrt((x - px)**2 + (y - py)**2)
 
     def intersect(self, othr):
         assert isinstance(othr, Line)
