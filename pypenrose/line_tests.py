@@ -119,3 +119,24 @@ def test_distance_to():
 
     assert np.allclose(line1.distance_to(1, 0), np.sqrt(2) / 2)
     assert np.allclose(line1.distance_to(0, 1), np.sqrt(2) / 2)
+
+
+def test_normal_line_through():
+    line1 = Line.from_two_points(0, 0, 1, 1)
+    line2 = line1.normal_line_through(0, 0)
+
+    xi, yi = line1.intersect(line2)
+    assert np.allclose([xi, yi], 0)
+
+    # Test normals to x=1
+    # line3 = Line(1, 0, 0)
+    # line4 = line3.normal_line_through(0, 0)
+    # print(line4)
+    # line5 = line4.normal_line_through(0, 0)
+    # assert line3 == line5, str(line3) + "!=" + str(line5)
+
+    # Test normals to y=1
+    line6 = Line(0, 1, 0)
+    line7 = line6.normal_line_through(0, 0)
+    line8 = line7.normal_line_through(0, 0)
+    assert line8 == line6

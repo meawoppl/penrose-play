@@ -10,8 +10,12 @@ class Colinear(Parallel):
 
 
 class Line:
-    # Note for FM: This whole class is a way to dodge using Mobius coordinates
-    # when we need to make the jump to ND-line geom, it should be rewritten as such
+    """
+    FM: This whole class is a way to dodge using Mobius coordinates
+    when we need to make the jump to ND-line geom, it should be rewritten as such
+    """
+    EPS = 1e-6
+
     def __init__(self, x, y, i):
         assert np.all(np.isfinite((x, y, i))), "Not valid value for line"
         assert (x != 0) or (y != 0), "Not a valid equation"
@@ -26,6 +30,9 @@ class Line:
         except ZeroDivisionError:
             m = float("inf")
 
+        if np.any(np.isinf(m)):
+            return cls(1, 0, px2)
+
         return cls.from_point_slope(px1, py1, m)
 
     @classmethod
@@ -37,10 +44,19 @@ class Line:
         # -m (x)  + y = - m (px) + py
         return cls(-m, 1, (-m * px) + py)
 
+    def normal_line_through(self, x, y):
+        xi, yi = self.closest_point_to(x, y)
+        if abs(self.x) < self.EPS:
+            # Slope is infinite (line takes form x=?)
+            # This means that perpendicular takes form y=?
+            return Line(1, 0, xi)
+        else:
+            return Line.from_point_slope(xi, yi, self.y / self.x)
+
     def _vec(self):
         return np.asarray([self.x, self.y, self.i])
 
-    def parallel(self, other, eps=1e-6):
+    def parallel(self, other):
         # Compute the angle b/t the lines
         dot_prod = (self.x * other.x) + (self.y * other.y)
         s_mag = np.sqrt(self.x**2 + self.y**2)
@@ -48,18 +64,19 @@ class Line:
 
         # Constrain angle to q1 with abs
         deg = abs(dot_prod) / (s_mag * o_mag)
-        return ((1 - abs(deg)) < eps)
+        return ((1 - abs(deg)) < self.EPS)
 
     def normalized(self):
-        n = np.max(np.abs(self._vec()))
-        n *= np.sign(self.x)
+        v = self._vec()
+        maximal = np.abs(v).argmax()
+        n = v[maximal]
         return Line(self.x / n, self.y / n, self.i / n)
 
     def equal(self, other, eps=1e-6):
         self_norm = self.normalized()._vec()
         othr_norm = other.normalized()._vec()
 
-        return np.allclose(self_norm, othr_norm, atol=eps)
+        return np.allclose(self_norm, othr_norm, atol=self.EPS)
 
     def __eq__(self, other):
         return self.equal(other)
@@ -108,3 +125,6 @@ class Line:
 
     def __str__(self):
         return "Line: %0.2fx + %0.2fy = %0.2f" % (self.x, self.y, self.i)
+
+    def meter(self, x, y):
+        pass
