@@ -126,6 +126,9 @@ class Line:
     def __str__(self):
         return "Line: %0.2fx + %0.2fy = %0.2f" % (self.x, self.y, self.i)
 
+    def __hash__(self):
+        return (self.x, self.y, self.i).__hash__()
+
     def signed_distance_manhattan(self, x, y):
         # MRG DANGER: https://en.wikipedia.org/wiki/Signed_zero
         n = self.normalized()
