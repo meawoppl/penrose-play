@@ -126,5 +126,12 @@ class Line:
     def __str__(self):
         return "Line: %0.2fx + %0.2fy = %0.2f" % (self.x, self.y, self.i)
 
-    def meter(self, x, y):
-        pass
+    def signed_distance_manhattan(self, x, y):
+        # MRG DANGER: https://en.wikipedia.org/wiki/Signed_zero
+        n = self.normalized()
+        return (n.x * x) + (n.y * y) - n.i
+
+    def signed_distance_euclidean(self, x, y):
+        # MRG DANGER: https://en.wikipedia.org/wiki/Signed_zero
+        manhattan = self.normal_line_through(0, 0).signed_distance_manhattan(x, y)
+        return self.distance_to(x, y) * np.sign(manhattan)
