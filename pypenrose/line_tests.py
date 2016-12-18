@@ -145,7 +145,7 @@ def test_normal_line_through():
 def test_signed_distance_manhattan():
     line1 = Line.from_two_points(0, 0, 1, 1)
 
-    for i in range(10):
+    for i in range(5):
         # Pts on the line
         nose.tools.assert_equal(line1.signed_distance_manhattan(i, i), 0)
 
