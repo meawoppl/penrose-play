@@ -145,15 +145,15 @@ def test_normal_line_through():
 def test_signed_distance_manhattan():
     line1 = Line.from_two_points(0, 0, 1, 1)
 
-    # Pts on the line
     for i in range(10):
+        # Pts on the line
         nose.tools.assert_equal(line1.signed_distance_manhattan(i, i), 0)
 
-    # Pts one unit above/below
-    for i in range(10):
+        # Pts one unit above/below
         nose.tools.assert_equal(line1.signed_distance_manhattan(i + 1, i), 1)
-        nose.tools.assert_equal(line1.signed_distance_manhattan(i, i + 1), -1)
         nose.tools.assert_equal(line1.signed_distance_manhattan(i - 1, i), -1)
+
+        nose.tools.assert_equal(line1.signed_distance_manhattan(i, i + 1), -1)
         nose.tools.assert_equal(line1.signed_distance_manhattan(i, i - 1), 1)
 
 
@@ -162,3 +162,9 @@ def test_line_signed_distance_euclidean():
 
     for i in range(5):
         nose.tools.assert_equal(line1.signed_distance_euclidean(i, i), 0)
+
+        nose.tools.assert_equal(line1.signed_distance_euclidean(i, i + 1), -np.sqrt(2) / 2)
+        nose.tools.assert_equal(line1.signed_distance_euclidean(i, i - 1), np.sqrt(2) / 2)
+
+        nose.tools.assert_equal(line1.signed_distance_euclidean(i + 1, i), np.sqrt(2) / 2)
+        nose.tools.assert_equal(line1.signed_distance_euclidean(i - 1, i), -np.sqrt(2) / 2)
