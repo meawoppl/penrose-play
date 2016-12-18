@@ -168,3 +168,20 @@ def test_line_signed_distance_euclidean():
 
         nose.tools.assert_equal(line1.signed_distance_euclidean(i + 1, i), np.sqrt(2) / 2)
         nose.tools.assert_equal(line1.signed_distance_euclidean(i - 1, i), -np.sqrt(2) / 2)
+
+
+def test_line_metric():
+    line1 = Line.from_two_points(0, 0, 1, 1)
+
+    for i in range(5):
+        r = line1.metric(i, i)
+        assert np.allclose(r, np.sqrt(2) * i)
+
+        r = line1.metric(-i, -i)
+        assert np.allclose(r, -np.sqrt(2) * i)
+
+        r = line1.metric(i, -i)
+        assert np.allclose(r, 0)
+
+        r = line1.metric(-i, i)
+        assert np.allclose(r, 0)

@@ -138,5 +138,4 @@ class Line:
 
     def metric(self, x, y):
         # MRG DANGER: https://en.wikipedia.org/wiki/Signed_zero
-        manhattan = self.normal_line_through(0, 0).signed_distance_manhattan(x, y)
-        return self.distance_to(x, y) * np.sign(manhattan)
+        return self.normal_line_through(0, 0).signed_distance_euclidean(x, y)
