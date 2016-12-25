@@ -7,11 +7,13 @@ from pypenrose.line import Line
 import pypenrose.space
 
 
-def assert_graph_props(g, *, nodes, edges):
+def assert_graph_props(g, *, nodes=None, edges=None):
     try:
         assert isinstance(g, nx.Graph)
-        nose.tools.assert_equal(len(g.nodes()), nodes, msg="Node Count Mismatch")
-        nose.tools.assert_equal(len(g.edges()), edges, msg="Edge Count Mismatch")
+        if nodes is not None:
+            nose.tools.assert_equal(len(g.nodes()), nodes, msg="Node Count Mismatch")
+        if edges is not None:
+            nose.tools.assert_equal(len(g.edges()), edges, msg="Edge Count Mismatch")
     except AssertionError:
         print("Your graphs appears fuckt")
         print("Nodes:")
@@ -68,3 +70,14 @@ def test_net_graphgen_3():
         Line(0, 1, 1),
     ])
     assert_graph_props(g, nodes=3, edges=3)
+
+
+def test_net_graphgen_5d():
+    for line_count in range(1, 7):
+        lol_of_lines = pypenrose.space.get_nd_grid_p1(line_count)
+
+        all_lines = sum(lol_of_lines, [])
+        g = pypenrose.net.gridlines_to_gridgraph(all_lines)
+
+        expected_nodecount = 10 * line_count**2
+        assert_graph_props(g, nodes=expected_nodecount)

@@ -123,7 +123,6 @@ def test_dense_self_intersection():
 
     xys = space.self_intersection(line_set)
 
-    print(xys)
     for x in range(len(line_set)):
         for y in range(len(line_set)):
             pt = xys[:, x, y]

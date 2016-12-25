@@ -49,12 +49,6 @@ def gridlines_to_gridgraph(list_of_gridlines):
         # Now we sort the intersecting list on the "order" which they intersect
         ordered = list(sorted(intersecting, key=lambda lxy: line1.metric(lxy[1], lxy[2])))
 
-        print("Ord:")
-        for od in ordered:
-            print("\t", od)
-
-        # Put them in an ordering, so edge ab and edge ba are the same
-
         # Add all the intersections as nodes
         for line2, xi, yi in ordered:
             node = ordered_line_pair(line1, line2)
