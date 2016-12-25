@@ -13,7 +13,8 @@ def sort_lines_on_line(basis_line, other_lines):
 
 
 def ordered_line_pair(line1, line2):
-    return (line1, line2) if id(line1) > id(line2) else (line2, line1)
+    """Stable sort of two line instance for aggregation into a unique pair"""
+    return tuple(sorted([line1, line2], key=lambda line: id(line)))
 
 
 def gridlines_to_gridgraph(list_of_gridlines):
@@ -24,7 +25,7 @@ def gridlines_to_gridgraph(list_of_gridlines):
 
 
     Arguments:
-        list_of_lines {[Line(), Line()...]} --
+        list_of_lines [Line(), Line()...] --
 
     Returns:
         nx.Graph()
@@ -34,10 +35,6 @@ def gridlines_to_gridgraph(list_of_gridlines):
     for n1, line1 in enumerate(list_of_gridlines):
         intersecting = []
         for n2, line2 in enumerate(list_of_gridlines):
-            # # Skip self-self and previous comparisons (Upper matrix)
-            # if n2 >= n1:
-            #     continue
-
             # No intersection for parallels
             try:
                 xi, yi = line1.intersect(line2)
