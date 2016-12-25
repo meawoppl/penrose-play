@@ -3,6 +3,19 @@ import networkx as nx
 import pypenrose.line
 
 
+def sort_lines_on_line(basis_line, other_lines):
+    isects = [(line, basis_line.intersect(line)) for line in other_lines]
+
+    isects_sorted = list(sorted(isects, key=lambda lxy: basis_line.metric(*lxy[1])))
+    lines_sorted = list(sorted(isects, key=lambda lxy: basis_line.metric(*lxy[1])))
+
+    return isects_sorted, lines_sorted
+
+
+def ordered_line_pair(line1, line2):
+    return (line1, line2) if id(line1) > id(line2) else (line2, line1)
+
+
 def gridlines_to_gridgraph(list_of_gridlines):
     """
     Turn N sets of gridlines into a nx-graph where nodes represent
@@ -21,9 +34,9 @@ def gridlines_to_gridgraph(list_of_gridlines):
     for n1, line1 in enumerate(list_of_gridlines):
         intersecting = []
         for n2, line2 in enumerate(list_of_gridlines):
-            # Skip self-self and previous comparisons (Upper matrix)
-            if n2 >= n1:
-                continue
+            # # Skip self-self and previous comparisons (Upper matrix)
+            # if n2 >= n1:
+            #     continue
 
             # No intersection for parallels
             try:
@@ -36,17 +49,23 @@ def gridlines_to_gridgraph(list_of_gridlines):
         # Now we sort the intersecting list on the "order" which they intersect
         ordered = list(sorted(intersecting, key=lambda lxy: line1.metric(lxy[1], lxy[2])))
 
-        print("ORD", ordered)
+        print("Ord:")
+        for od in ordered:
+            print("\t", od)
+
+        # Put them in an ordering, so edge ab and edge ba are the same
+
         # Add all the intersections as nodes
         for line2, xi, yi in ordered:
-            g.add_node((line1, line2), {"intersection": (xi, yi)})
+            node = ordered_line_pair(line1, line2)
+            g.add_node(node, {"intersection": (xi, yi)})
 
         for i in range(len(ordered[:-1])):
             line2_1 = ordered[i][0]
-            node1 = (line1, line2_1)
+            node1 = ordered_line_pair(line1, line2_1)
 
             line2_2 = ordered[i + 1][0]
-            node2 = (line1, line2_2)
+            node2 = ordered_line_pair(line1, line2_2)
 
             g.add_edge(node1, node2)
 

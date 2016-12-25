@@ -3,7 +3,7 @@ import itertools
 import nose.tools
 import numpy as np
 
-from pypenrose.line import Parallel
+from pypenrose.line import Line, Parallel
 import pypenrose.space as space
 
 
@@ -106,3 +106,28 @@ def test_dense_intersection():
     for indx in range(0, line_count):
         assert np.allclose(xs[indx, :], indx - 4)
         assert np.allclose(ys[:, indx], indx - 4)
+
+
+def test_dense_self_intersection():
+    line_count = 5
+    xlines, ylines = space.get_nd_grid(line_count, ndim=2)
+
+    # Intersect all the parallel lines.
+    # Easy to test, none should intersect
+    xys = space.self_intersection(xlines)
+
+    assert xys.shape == (2, line_count, line_count)
+    assert np.all(np.isnan(xys))
+
+    line_set = [Line(1, -1, 0), Line(1, 0, 1), Line(0, 1, 1)]
+
+    xys = space.self_intersection(line_set)
+
+    print(xys)
+    for x in range(len(line_set)):
+        for y in range(len(line_set)):
+            pt = xys[:, x, y]
+            if x == y:
+                assert np.all(np.isnan(pt))
+            else:
+                assert np.all(pt == 1)

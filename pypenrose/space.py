@@ -70,6 +70,27 @@ def dense_intersection(lines1, lines2):
     return output
 
 
+def self_intersection(lines):
+    line_count = len(lines)
+    out_shape = (2, line_count, line_count)
+    output = np.zeros(out_shape, dtype=np.float64)
+
+    for lid1, line1 in enumerate(lines):
+        output[:, lid1, lid1] = np.nan
+
+        for lid2 in range(lid1 + 1, line_count):
+            line2 = lines[lid2]
+            try:
+                result = line1.intersect(line2)
+            except Parallel:
+                result = (np.nan, np.nan)
+
+            output[:, lid1, lid2] = result
+            output[:, lid2, lid1] = result
+
+    return output
+
+
 # def intersect_all_gridlines(line_sets):
 #     assert len(line_sets) >= 0
 

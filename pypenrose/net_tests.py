@@ -10,8 +10,8 @@ import pypenrose.space
 def assert_graph_props(g, *, nodes, edges):
     try:
         assert isinstance(g, nx.Graph)
-        nose.tools.assert_equal(len(g.nodes()), nodes)
-        nose.tools.assert_equal(len(g.edges()), edges)
+        nose.tools.assert_equal(len(g.nodes()), nodes, msg="Node Count Mismatch")
+        nose.tools.assert_equal(len(g.edges()), edges, msg="Edge Count Mismatch")
     except AssertionError:
         print("Your graphs appears fuckt")
         print("Nodes:")
