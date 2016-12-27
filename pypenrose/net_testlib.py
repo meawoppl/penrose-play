@@ -41,3 +41,8 @@ def get_simple_net():
     verti = get_1d_gridlines((0, 1), 0, 3)
 
     return gridlines_to_gridgraph(horiz + verti)
+
+
+def test_get_simple_net():
+    g = get_simple_net()
+    assert_graph_props(g, nodes=9, edges=12)

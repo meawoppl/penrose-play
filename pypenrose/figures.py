@@ -78,7 +78,7 @@ def plot_gridgraph(graph):
     plt.show()
 
 
-def draw_tile(graph, node):
+def draw_tile(graph, node, from_node):
     print("Parent:", node)
     surrounding = []
     for adj in graph[node]:
