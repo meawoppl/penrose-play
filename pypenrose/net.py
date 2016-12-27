@@ -3,15 +3,6 @@ import networkx as nx
 import pypenrose.line
 
 
-def sort_lines_on_line(basis_line, other_lines):
-    isects = [(line, basis_line.intersect(line)) for line in other_lines]
-
-    isects_sorted = list(sorted(isects, key=lambda lxy: basis_line.metric(*lxy[1])))
-    lines_sorted = list(sorted(isects, key=lambda lxy: basis_line.metric(*lxy[1])))
-
-    return isects_sorted, lines_sorted
-
-
 def ordered_line_pair(line1, line2):
     """Stable sort of two line instance for aggregation into a unique pair"""
     return tuple(sorted([line1, line2], key=lambda line: id(line)))
@@ -39,7 +30,7 @@ def gridlines_to_gridgraph(list_of_gridlines):
     return g
 
 
-def sorted_intersection_list(main_line, other_lines):
+def sorted_intersection_digraph(main_line, other_lines):
     """
     Return a list of tuples of the form (Line(), x_intersect, y_intersect)
     Tuples are in the order of the occurace along the line consistant with the .metric()
@@ -63,11 +54,7 @@ def sorted_intersection_list(main_line, other_lines):
         intersecting.append((other_line, xi, yi))
 
     # Now we sort the intersecting list on the "order" which they intersect
-    return [line for line, x, y in sorted(intersecting, key=lambda lxy: main_line.metric(lxy[1], lxy[2]))]
-
-
-def sorted_intersection_digraph(main_line, other_lines):
-    ordered = sorted_intersection_list(main_line, other_lines)
+    ordered = [line for line, x, y in sorted(intersecting, key=lambda lxy: main_line.metric(lxy[1], lxy[2]))]
 
     g = nx.DiGraph()
     # Add all the intersections as nodes
