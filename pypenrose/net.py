@@ -32,19 +32,9 @@ def gridlines_to_gridgraph(list_of_gridlines):
     """
     g = nx.Graph()
 
-    for n1, line1 in enumerate(list_of_gridlines):
-        intersecting = []
-        for n2, line2 in enumerate(list_of_gridlines):
-            # No intersection for parallels
-            try:
-                xi, yi = line1.intersect(line2)
-            except pypenrose.line.Parallel:
-                continue
-
-            intersecting.append((line2, xi, yi))
-
+    for line1 in list_of_gridlines:
         # Now we sort the intersecting list on the "order" which they intersect
-        ordered = list(sorted(intersecting, key=lambda lxy: line1.metric(lxy[1], lxy[2])))
+        ordered = sorted_intersection_list(line1, list_of_gridlines)
 
         # Add all the intersections as nodes
         for line2, xi, yi in ordered:
@@ -61,3 +51,18 @@ def gridlines_to_gridgraph(list_of_gridlines):
             g.add_edge(node1, node2)
 
     return g
+
+
+def sorted_intersection_list(main_line, other_lines):
+    intersecting = []
+    for other_line in other_lines:
+        # No intersection for parallels
+        try:
+            xi, yi = main_line.intersect(other_line)
+        except pypenrose.line.Parallel:
+            continue
+
+        intersecting.append((other_line, xi, yi))
+
+    # Now we sort the intersecting list on the "order" which they intersect
+    return list(sorted(intersecting, key=lambda lxy: main_line.metric(lxy[1], lxy[2])))
