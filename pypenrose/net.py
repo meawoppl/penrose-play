@@ -23,7 +23,6 @@ def gridlines_to_gridgraph(list_of_gridlines):
     an intersection between two lines (node-attrs) and edges connect
     nearest intersections.
 
-
     Arguments:
         list_of_lines [Line(), ... , Line()]
 
@@ -35,7 +34,6 @@ def gridlines_to_gridgraph(list_of_gridlines):
     for line1 in list_of_gridlines:
         # Now we sort the intersecting list on the "order" which they intersect
         line_digraph = sorted_intersection_digraph(line1, list_of_gridlines)
-
         g = nx.compose(g, line_digraph)
 
     return g
