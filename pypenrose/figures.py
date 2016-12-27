@@ -91,9 +91,10 @@ def draw_tile(graph, node):
 
 class PDFSurfaceWrapper:
     def __init__(self, flo, inch_size=(10, 10)):
-        self.f = flo
-        # MRG ? Why do I have to call the surace size twice?
-        self.surface = cairo.PDFSurface(self.f, inch_size[0] * 72, inch_size[1] * 72)
+        self.__f = flo
+
+        # MRG ? Why do I have to call the surface dims twice?
+        self.surface = cairo.PDFSurface(self.__f, inch_size[0] * 72, inch_size[1] * 72)
         self.surface.set_size(inch_size[0] * 72, inch_size[1] * 72)
 
     def __enter__(self):
