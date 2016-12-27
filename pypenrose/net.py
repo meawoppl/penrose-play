@@ -25,7 +25,7 @@ def gridlines_to_gridgraph(list_of_gridlines):
 
 
     Arguments:
-        list_of_lines [Line(), Line()...] --
+        list_of_lines [Line(), ... , Line()]
 
     Returns:
         nx.Graph()
@@ -37,15 +37,15 @@ def gridlines_to_gridgraph(list_of_gridlines):
         ordered = sorted_intersection_list(line1, list_of_gridlines)
 
         # Add all the intersections as nodes
-        for line2, xi, yi in ordered:
+        for line2 in ordered:
             node = ordered_line_pair(line1, line2)
-            g.add_node(node, intersection=(xi, yi))
+            g.add_node(node, intersection=line1.intersect(line2))
 
         for i in range(len(ordered[:-1])):
-            line2_1 = ordered[i][0]
+            line2_1 = ordered[i]
             node1 = ordered_line_pair(line1, line2_1)
 
-            line2_2 = ordered[i + 1][0]
+            line2_2 = ordered[i + 1]
             node2 = ordered_line_pair(line1, line2_2)
 
             g.add_edge(node1, node2)
@@ -54,6 +54,18 @@ def gridlines_to_gridgraph(list_of_gridlines):
 
 
 def sorted_intersection_list(main_line, other_lines):
+    """
+    Return a list of tuples of the form (Line(), x_intersect, y_intersect)
+    Tuples are in the order of the occurace along the line consistant with the .metric()
+    function for the main_line
+
+    Arguments:
+        main_line -- An instance of Line()
+        other_lines -- A list of Line() instances
+
+    Returns:
+        [(Line_1, x_1, y_1) ... (Line_n, x_n, y_n)]
+    """
     intersecting = []
     for other_line in other_lines:
         # No intersection for parallels
@@ -65,4 +77,4 @@ def sorted_intersection_list(main_line, other_lines):
         intersecting.append((other_line, xi, yi))
 
     # Now we sort the intersecting list on the "order" which they intersect
-    return list(sorted(intersecting, key=lambda lxy: main_line.metric(lxy[1], lxy[2])))
+    return [line for line, x, y in sorted(intersecting, key=lambda lxy: main_line.metric(lxy[1], lxy[2]))]
