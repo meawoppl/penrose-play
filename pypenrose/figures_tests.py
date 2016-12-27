@@ -24,4 +24,4 @@ def test_PDFSurfaceWrapper():
             assert issubclass(ctx.__class__, cairo.Context)
 
         tf.seek(0)
-        assert len(tf.read()) != 0
+        assert len(tf.read()) > 0, "No Bytes Written!"
