@@ -1,41 +1,11 @@
 import math
 
-import networkx as nx
 import nose.tools
 
-import pypenrose.net
 from pypenrose.line import Line
+import pypenrose.net
+from pypenrose.net_testlib import assert_graph_props
 import pypenrose.space
-
-
-def assert_graph_props(g, *, nodes=None, edges=None):
-    try:
-        assert isinstance(g, nx.Graph)
-        if nodes is not None:
-            nose.tools.assert_equal(len(g.nodes()), nodes, msg="Node Count Mismatch")
-        if edges is not None:
-            nose.tools.assert_equal(len(g.edges()), edges, msg="Edge Count Mismatch")
-    except AssertionError:
-        print()
-        print("Your graph shape is wrong:")
-        print("Nodes:")
-        for node in g.nodes():
-            print(node)
-        print("Edges:")
-        for edge in g.edges():
-            print(edge)
-        raise
-
-    # Check that the intersection points are 2 tuple of floats
-    for node in g.nodes():
-        intersection = g.node[node]["intersection"]
-        assert len(intersection) == 2, intersection
-        assert all(float(i) == i for i in intersection)
-
-    # Check that all the edges get annotation of the parent line
-    for node1, node2, data in g.edges(data=True):
-        parent_line = data["line"]
-        assert isinstance(parent_line, pypenrose.line.Line)
 
 
 def test_net_graphgen_degenerate():
