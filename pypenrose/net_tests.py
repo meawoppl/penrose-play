@@ -15,6 +15,7 @@ def assert_graph_props(g, *, nodes=None, edges=None):
         if edges is not None:
             nose.tools.assert_equal(len(g.edges()), edges, msg="Edge Count Mismatch")
     except AssertionError:
+        print()
         print("Your graphs appears fuckt")
         print("Nodes:")
         for node in g.nodes():
@@ -34,7 +35,7 @@ def test_net_graphgen_degenerate():
     g = pypenrose.net.gridlines_to_gridgraph([Line(0, 1, 1)])
     assert_graph_props(g, nodes=0, edges=0)
 
-    # All parallell lines
+    # All parallel lines
     g = pypenrose.net.gridlines_to_gridgraph([
         Line(0, 1, 1),
         Line(0, 1, 2),
