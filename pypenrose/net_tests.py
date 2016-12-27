@@ -107,12 +107,16 @@ def test_angle_between_nodes():
         -math.pi / 2
     )
 
-    nose.tools.assert_almost_equal(
+
+def test_angle_between_nodes_degenerate():
+    nose.tools.assert_equal(
         pypenrose.net.angle_between_nodes((0, 1), (0, 0), (0, 1)),
         0
     )
 
-    nose.tools.assert_almost_equal(
+    # MRG NOTE: I really think this should be a NaN. (vs the c spec)
+    # https://en.wikipedia.org/wiki/Atan2
+    nose.tools.assert_equal(
         pypenrose.net.angle_between_nodes((0, 0), (0, 0), (0, 0)),
         0
     )
