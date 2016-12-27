@@ -62,7 +62,10 @@ def test_intersect_parallel_harder():
 
 def test_string():
     line1 = Line(1, 1, 1)
-    assert str(line1) == "Line: 1.00x + 1.00y = 1.00"
+    nose.tools.assert_equal(
+        str(line1),
+        "Line: 1.00x + 1.00y = 1.00"
+    )
 
 
 def test_eval():
@@ -75,8 +78,8 @@ def test_eq_operator():
     line1 = Line(1, -1, 0)  # y = x
     line2 = Line(-1, 1, 0)  # y = x
 
-    assert line1 == line2
-    assert line2 == line1
+    nose.tools.assert_equal(line1, line2)
+    nose.tools.assert_equal(line2, line1)
 
     line3 = Line(5, 4, 3)
     line4 = Line(-1, 3, 7)
@@ -94,8 +97,11 @@ def test_alt_constructors():
     line1 = Line.from_point_slope(0, 0, 1)
     line2 = Line.from_two_points(0, 0, 1, 1)
 
-    assert line1 == line2
-    assert Line(1, 0, 1) == Line.from_point_slope(1, 0, float("inf"))
+    nose.tools.assert_equal(line1, line2)
+    nose.tools.assert_equal(
+        Line(1, 0, 1),
+        Line.from_point_slope(1, 0, float("inf"))
+    )
 
     line3 = Line.from_two_points(0.0, 0.0, 0.0, -1.0)
     line4 = Line.from_two_points(0.0, 0.0, 0.0, 1.0)
@@ -132,13 +138,13 @@ def test_normal_line_through():
     line3 = Line(1, 0, 0)
     line4 = line3.normal_line_through(0, 0)
     line5 = line4.normal_line_through(0, 0)
-    assert line3 == line5, str(line3) + "!=" + str(line5)
+    nose.tools.assert_equal(line3, line5)
 
     # Test normals to y=1
     line6 = Line(0, 1, 0)
     line7 = line6.normal_line_through(0, 0)
     line8 = line7.normal_line_through(0, 0)
-    assert line8 == line6
+    nose.tools.assert_equal(line8, line6)
 
 
 def test_signed_distance_manhattan():
