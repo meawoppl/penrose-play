@@ -131,7 +131,6 @@ def test_normal_line_through():
     # Test normals to x=1
     line3 = Line(1, 0, 0)
     line4 = line3.normal_line_through(0, 0)
-    print(line4)
     line5 = line4.normal_line_through(0, 0)
     assert line3 == line5, str(line3) + "!=" + str(line5)
 
