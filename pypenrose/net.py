@@ -49,7 +49,7 @@ def gridlines_to_gridgraph(list_of_gridlines):
         # Add all the intersections as nodes
         for line2, xi, yi in ordered:
             node = ordered_line_pair(line1, line2)
-            g.add_node(node, {"intersection": (xi, yi)})
+            g.add_node(node, intersection=(xi, yi))
 
         for i in range(len(ordered[:-1])):
             line2_1 = ordered[i][0]

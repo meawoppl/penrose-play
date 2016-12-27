@@ -1,5 +1,6 @@
 import warnings
 
+import cairo
 import numpy as np
 import pylab as plt
 
@@ -33,7 +34,7 @@ def plot_line_inside_bounds(line, extents=[-10, 10, -10, 10], *plt_args, **plt_k
         if pt > extents[2] and pt < extents[3]:
             pts.add((extent, pt))
 
-    # y extents
+    # Y extents
     for extent in extents[2:4]:
         try:
             pt = line.x_at(extent)
@@ -50,3 +51,53 @@ def plot_line_inside_bounds(line, extents=[-10, 10, -10, 10], *plt_args, **plt_k
     aray = pt1, pt2 = np.asarray(list(pts))
     plt.plot(aray[:, 0], aray[:, 1], *plt_args, **plt_kwargs)
     plt.axis(extents)
+
+
+def plot_gridgraph(graph):
+    # Draw points at the intersections
+    for node, node_data in graph.nodes_iter(data=True):
+        isect = node_data["intersection"]
+        plt.plot([isect[0]], [isect[1]], "bo")
+
+    for node1, node2 in graph.edges_iter():
+        pt1 = graph.node[node1]["intersection"]
+        pt2 = graph.node[node2]["intersection"]
+
+        hull_edge = (graph.degree(node1) < 4) or (graph.degree(node2) < 4)
+
+        color = "r" if hull_edge else "b"
+
+        plt.plot([pt1[0], pt2[0]], [pt1[1], pt2[1]], color=color, lw=3, alpha=.3)
+
+    for node, node_data in graph.nodes_iter(data=True):
+        if graph.degree(node) == 4:
+            draw_tile(graph, node)
+        break
+
+    plt.axis([-10, 10, -10, 10])
+    plt.show()
+
+
+def draw_tile(graph, node):
+    print("Parent:", node)
+    surrounding = []
+    for adj in graph[node]:
+        print("\t", adj)
+        s = graph.node[adj]["intersection"]
+        surrounding.append(s)
+
+    plt.plot()
+
+
+class PDFSurfaceWrapper:
+    def __init__(self, flo, inch_size=(10, 10)):
+        self.f = flo
+        # MRG ? Why do I have to call the surace size twice?
+        self.surface = cairo.PDFSurface(self.f, inch_size[0] * 72, inch_size[1] * 72)
+        self.surface.set_size(inch_size[0] * 72, inch_size[1] * 72)
+
+    def __enter__(self):
+        return cairo.Context(self.surface)
+
+    def __exit__(self, *args):
+        self.surface.finish()
