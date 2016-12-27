@@ -1,3 +1,5 @@
+import math
+
 import networkx as nx
 
 import pypenrose.line
@@ -41,7 +43,7 @@ def sorted_intersection_digraph(main_line, other_lines):
         other_lines -- A list of Line() instances
 
     Returns:
-        [(Line_1, x_1, y_1) ... (Line_n, x_n, y_n)]
+        nx.DiGraph()
     """
     intersecting = []
     for other_line in other_lines:
@@ -68,3 +70,16 @@ def sorted_intersection_digraph(main_line, other_lines):
         g.add_edge(n1, n2, line=main_line)
 
     return g
+
+
+def angle_between_nodes(i1, i2, i3):
+    x1 = i1[0] - i2[0]
+    y1 = i1[1] - i2[1]
+
+    x2 = i3[0] - i2[0]
+    y2 = i3[1] - i2[1]
+
+    dot = x1 * x2 + y1 * y2      # dot product
+    det = x1 * y2 - y1 * x2      # determinant
+
+    return math.atan2(det, dot)

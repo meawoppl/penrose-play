@@ -1,5 +1,6 @@
-import networkx as nx
+import math
 
+import networkx as nx
 import nose.tools
 
 import pypenrose.net
@@ -93,3 +94,25 @@ def test_net_graphgen_5d():
 
         expected_nodecount = 10 * line_count**2
         assert_graph_props(g, nodes=expected_nodecount)
+
+
+def test_angle_between_nodes():
+    nose.tools.assert_almost_equal(
+        pypenrose.net.angle_between_nodes((1, 0), (0, 0), (0, 1)),
+        math.pi / 2
+    )
+
+    nose.tools.assert_almost_equal(
+        pypenrose.net.angle_between_nodes((0, 1), (0, 0), (1, 0)),
+        -math.pi / 2
+    )
+
+    nose.tools.assert_almost_equal(
+        pypenrose.net.angle_between_nodes((0, 1), (0, 0), (0, 1)),
+        0
+    )
+
+    nose.tools.assert_almost_equal(
+        pypenrose.net.angle_between_nodes((0, 0), (0, 0), (0, 0)),
+        5
+    )
