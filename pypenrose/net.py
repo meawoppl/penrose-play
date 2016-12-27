@@ -30,25 +30,13 @@ def gridlines_to_gridgraph(list_of_gridlines):
     Returns:
         nx.Graph()
     """
-    g = nx.Graph()
+    g = nx.DiGraph()
 
     for line1 in list_of_gridlines:
         # Now we sort the intersecting list on the "order" which they intersect
-        ordered = sorted_intersection_list(line1, list_of_gridlines)
+        line_digraph = sorted_intersection_digraph(line1, list_of_gridlines)
 
-        # Add all the intersections as nodes
-        for line2 in ordered:
-            node = ordered_line_pair(line1, line2)
-            g.add_node(node, intersection=line1.intersect(line2))
-
-        for i in range(len(ordered[:-1])):
-            line2_1 = ordered[i]
-            node1 = ordered_line_pair(line1, line2_1)
-
-            line2_2 = ordered[i + 1]
-            node2 = ordered_line_pair(line1, line2_2)
-
-            g.add_edge(node1, node2)
+        g = nx.compose(g, line_digraph)
 
     return g
 
@@ -78,3 +66,20 @@ def sorted_intersection_list(main_line, other_lines):
 
     # Now we sort the intersecting list on the "order" which they intersect
     return [line for line, x, y in sorted(intersecting, key=lambda lxy: main_line.metric(lxy[1], lxy[2]))]
+
+
+def sorted_intersection_digraph(main_line, other_lines):
+    ordered = sorted_intersection_list(main_line, other_lines)
+
+    g = nx.DiGraph()
+    # Add all the intersections as nodes
+    for line2 in ordered:
+        n = ordered_line_pair(main_line, line2)
+        g.add_node(n, intersection=main_line.intersect(line2))
+
+    for line1, line2 in zip(ordered[:-1], ordered[1:]):
+        n1 = ordered_line_pair(main_line, line1)
+        n2 = ordered_line_pair(main_line, line2)
+        g.add_edge(n1, n2, line=main_line)
+
+    return g
