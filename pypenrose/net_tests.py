@@ -114,5 +114,5 @@ def test_angle_between_nodes():
 
     nose.tools.assert_almost_equal(
         pypenrose.net.angle_between_nodes((0, 0), (0, 0), (0, 0)),
-        5
+        0
     )
