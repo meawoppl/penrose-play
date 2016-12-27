@@ -16,7 +16,7 @@ def assert_graph_props(g, *, nodes=None, edges=None):
             nose.tools.assert_equal(len(g.edges()), edges, msg="Edge Count Mismatch")
     except AssertionError:
         print()
-        print("Your graphs appears fuckt")
+        print("Your graph shape is wrong:")
         print("Nodes:")
         for node in g.nodes():
             print(node)
@@ -24,6 +24,17 @@ def assert_graph_props(g, *, nodes=None, edges=None):
         for edge in g.edges():
             print(edge)
         raise
+
+    # Check that the intersection points are 2 tuple of floats
+    for node in g.nodes():
+        intersection = g.node[node]["intersection"]
+        assert len(intersection) == 2, intersection
+        assert all(float(i) == i for i in intersection)
+
+    # Check that all the edges get annotation of the parent line
+    for node1, node2, data in g.edges(data=True):
+        parent_line = data["line"]
+        assert isinstance(parent_line, pypenrose.line.Line)
 
 
 def test_net_graphgen_degenerate():
