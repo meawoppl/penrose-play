@@ -73,6 +73,7 @@ def sorted_intersection_digraph(main_line, other_lines):
 
 
 def angle_between_nodes(i1, i2, i3):
+    # Return the CCW angle between two points [0, 2pi)
     x1 = i1[0] - i2[0]
     y1 = i1[1] - i2[1]
 
@@ -82,4 +83,7 @@ def angle_between_nodes(i1, i2, i3):
     dot = x1 * x2 + y1 * y2      # dot product
     det = x1 * y2 - y1 * x2      # determinant
 
-    return math.atan2(det, dot)
+    val = math.atan2(det, dot)
+
+    # Wrap the +- to 0-2pi
+    return val if val >= 0 else ((2 * math.pi) + val)
