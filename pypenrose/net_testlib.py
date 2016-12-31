@@ -65,8 +65,7 @@ def get_center_edge(net):
     edge = None
 
     undirected = nx.Graph(net)
-    for node in undirected:
-        node_degree = len(undirected.neighbors(node))
+    for node, node_degree in undirected.degree_iter():
         if node_degree == 4:
             internal = node
         if node_degree == 3:
