@@ -43,3 +43,10 @@ def test_roll_degenerate():
             pypenrose.util.roll([1], distance),
             [1]
         )
+
+
+def test_rolled_loop_iterator():
+    roll_length = 5
+    to_roll = list(range(roll_length))
+    for n1, n2 in pypenrose.util.rolled_loop_iterator(to_roll):
+        assert ((n2 - 1) % roll_length) == n1, (n1, n2)
