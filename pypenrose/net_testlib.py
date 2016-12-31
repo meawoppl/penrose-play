@@ -37,10 +37,44 @@ def assert_graph_props(g, *, nodes=None, edges=None):
 
 
 def get_simple_net():
+    # This is a pure x-y edged net looking like this:
+    #
+    #   0-0-0
+    #   | | |
+    #   0-0-0
+    #   | | |
+    #   0-0-0
+
     horiz = get_1d_gridlines((1, 0), 0, 3)
     verti = get_1d_gridlines((0, 1), 0, 3)
-
     return gridlines_to_gridgraph(horiz + verti)
+
+
+def get_center_edge(net):
+    """
+    Helper to return the first internal and
+    edge node in a net it finds
+
+    Arguments:
+        net {nx.(Di)Graph} -- A nx graph representing a 2d net
+
+    Returns:
+        tuple(enclosed, edge) -- Two node identifiers
+    """
+    internal = None
+    edge = None
+
+    undirected = nx.Graph(net)
+    for node in undirected:
+        node_degree = len(undirected.neighbors(node))
+        if node_degree == 4:
+            internal = node
+        if node_degree == 3:
+            edge = node
+        if (internal is not None) and (edge is not None):
+            break
+    assert (internal is not None) and (edge is not None), "Net does not have correct topology"
+    return internal, edge
 
 
 def test_get_simple_net():

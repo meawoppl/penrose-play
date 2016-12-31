@@ -87,3 +87,17 @@ def angle_between_nodes(i1, i2, i3):
 
     # Wrap the +- to 0-2pi
     return val if val >= 0 else ((2 * math.pi) + val)
+
+
+def determine_winding(graph, center_node, spoke_node):
+    undirected = nx.Graph(graph)
+    neighbors = undirected.neighbors(center_node)
+
+    def angle_wrt_to(other_node):
+        i1 = undirected.node[spoke_node]["intersection"]
+        i2 = undirected.node[center_node]["intersection"]
+        i3 = undirected.node[other_node]["intersection"]
+
+        return angle_between_nodes(i1, i2, i3)
+
+    return list(sorted(neighbors, key=angle_wrt_to))

@@ -4,6 +4,7 @@ import nose.tools
 
 from pypenrose.line import Line
 import pypenrose.net
+import pypenrose.net_testlib
 from pypenrose.net_testlib import assert_graph_props
 import pypenrose.space
 
@@ -99,3 +100,8 @@ def test_angle_between_nodes_degenerate():
         pypenrose.net.angle_between_nodes((0, 0), (0, 0), (0, 0)),
         0
     )
+
+
+def test_determine_winding():
+    net = pypenrose.net_testlib.get_simple_net()
+    center, edge_node = pypenrose.net_testlib.get_center_edge(net)

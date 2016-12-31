@@ -89,14 +89,3 @@ def self_intersection(lines):
             output[:, lid2, lid1] = result
 
     return output
-
-
-# def intersect_all_gridlines(line_sets):
-#     assert len(line_sets) >= 0
-
-#     for gid1, set1 in enumerate(line_sets):
-#         for gid2, set2 in enumerate(line_sets):
-#             # Only do the upper diag
-#             if gid2 <= gid1:
-#                 continue
-#             dense_intersection(set1, set2)
