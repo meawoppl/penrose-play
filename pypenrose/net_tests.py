@@ -1,3 +1,5 @@
+import math
+
 import nose.tools
 
 from pypenrose.line import Line
@@ -84,4 +86,6 @@ def test_compute_angles():
     net = pypenrose.net_testlib.get_simple_net()
     center, edge_node = pypenrose.net_testlib.get_center_edge(net.g)
 
-    print(net.compute_angles(center, edge_node))
+    # For the square mesh, all angles should be 90
+    for angle in net.compute_angles(center, edge_node):
+        nose.tools.assert_equal(angle, math.pi / 2)

@@ -115,7 +115,6 @@ class Net:
 
         angles = []
         for n1, n2 in pypenrose.util.rolled_loop_iterator(winding):
-            print(n1, n2)
             a = self._angle_between_nodes(n1, center_node, n2)
             angles.append(a)
         return angles
