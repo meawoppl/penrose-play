@@ -73,23 +73,6 @@ def sorted_intersection_digraph(main_line, other_lines):
     return g
 
 
-def angle_between_nodes(i1, i2, i3):
-    # Return the CCW angle between two points [0, 2pi)
-    x1 = i1[0] - i2[0]
-    y1 = i1[1] - i2[1]
-
-    x2 = i3[0] - i2[0]
-    y2 = i3[1] - i2[1]
-
-    dot = x1 * x2 + y1 * y2      # dot product
-    det = x1 * y2 - y1 * x2      # determinant
-
-    val = math.atan2(det, dot)
-
-    # [-180, 180) -> [0, 2pi)
-    return val if val >= 0 else ((2 * math.pi) + val)
-
-
 class Net:
     def __init__(self, list_of_lines):
         self.g = gridlines_to_gridgraph(list_of_lines)
@@ -97,17 +80,33 @@ class Net:
     def _get_intersection(self, node):
         return self.g.node[node]["intersection"]
 
+    def _angle_between_nodes(self, spoke_node, center_node, other_node):
+        i1 = self._get_intersection(spoke_node)
+        i2 = self._get_intersection(center_node)
+        i3 = self._get_intersection(other_node)
+
+        # Return the CCW angle between two points [0, 2pi)
+        x1 = i1[0] - i2[0]
+        y1 = i1[1] - i2[1]
+
+        x2 = i3[0] - i2[0]
+        y2 = i3[1] - i2[1]
+
+        dot = x1 * x2 + y1 * y2      # dot product
+        det = x1 * y2 - y1 * x2      # determinant
+
+        val = math.atan2(det, dot)
+
+        # [-180, 180) -> [0, 2pi)
+        return val if val >= 0 else ((2 * math.pi) + val)
+
     def determine_winding(self, center_node, spoke_node):
         undirected = nx.Graph(self.g)
         neighbors = undirected.neighbors(center_node)
         assert spoke_node in neighbors, "Spoke node not connected to the center"
 
         def angle_wrt_to(other_node):
-            i1 = self._get_intersection(spoke_node)
-            i2 = self._get_intersection(center_node)
-            i3 = self._get_intersection(other_node)
-
-            return angle_between_nodes(i1, i2, i3)
+            return self._angle_between_nodes(spoke_node, center_node, other_node)
 
         return list(sorted(neighbors, key=angle_wrt_to))
 
@@ -117,6 +116,6 @@ class Net:
         angles = []
         for n1, n2 in pypenrose.util.rolled_loop_iterator(winding):
             print(n1, n2)
-            a = angle_between_nodes(n1, center_node, n2)
+            a = self._angle_between_nodes(n1, center_node, n2)
             angles.append(a)
         return angles

@@ -1,5 +1,3 @@
-import math
-
 import nose.tools
 
 from pypenrose.line import Line
@@ -65,41 +63,6 @@ def test_net_graphgen_5d():
 
         expected_nodecount = 10 * line_count**2
         assert_graph_props(g, nodes=expected_nodecount)
-
-
-def test_angle_between_nodes():
-    # 0 deg
-    nose.tools.assert_equal(
-        pypenrose.net.angle_between_nodes((0, 1), (0, 0), (0, 1)),
-        0
-    )
-
-    # 45 deg
-    nose.tools.assert_almost_equal(
-        pypenrose.net.angle_between_nodes((1, 0), (0, 0), (1, 1)),
-        math.pi / 4
-    )
-
-    # 90 deg
-    nose.tools.assert_almost_equal(
-        pypenrose.net.angle_between_nodes((1, 0), (0, 0), (0, 1)),
-        math.pi / 2
-    )
-
-    # 135 deg
-    nose.tools.assert_almost_equal(
-        pypenrose.net.angle_between_nodes((0, 1), (0, 0), (1, 0)),
-        3 * math.pi / 2
-    )
-
-
-def test_angle_between_nodes_degenerate():
-    # MRG NOTE: I really think this should be a NaN. (vs the c spec)
-    # https://en.wikipedia.org/wiki/Atan2
-    nose.tools.assert_equal(
-        pypenrose.net.angle_between_nodes((0, 0), (0, 0), (0, 0)),
-        0
-    )
 
 
 def test_determine_winding():

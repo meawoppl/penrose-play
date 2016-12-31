@@ -60,6 +60,8 @@ def get_center_edge(net):
 
     Returns:
         tuple(enclosed, edge) -- Two node identifiers
+
+    Raises AssertionError if nodes with degree 3 and 4 are not found.
     """
     internal = None
     edge = None
