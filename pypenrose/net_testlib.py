@@ -2,8 +2,8 @@ import nose.tools
 import networkx as nx
 
 import pypenrose.line
+import pypenrose.net
 from pypenrose.space import get_1d_gridlines
-from pypenrose.net import gridlines_to_gridgraph
 
 
 def assert_graph_props(g, *, nodes=None, edges=None):
@@ -47,7 +47,7 @@ def get_simple_net():
 
     horiz = get_1d_gridlines((1, 0), 0, 3)
     verti = get_1d_gridlines((0, 1), 0, 3)
-    return gridlines_to_gridgraph(horiz + verti)
+    return pypenrose.net.Net(horiz + verti)
 
 
 def get_center_edge(net):
@@ -78,5 +78,5 @@ def get_center_edge(net):
 
 
 def test_get_simple_net():
-    g = get_simple_net()
-    assert_graph_props(g, nodes=9, edges=12)
+    n = get_simple_net()
+    assert_graph_props(n.g, nodes=9, edges=12)

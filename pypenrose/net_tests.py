@@ -104,4 +104,21 @@ def test_angle_between_nodes_degenerate():
 
 def test_determine_winding():
     net = pypenrose.net_testlib.get_simple_net()
-    center, edge_node = pypenrose.net_testlib.get_center_edge(net)
+    center, edge_node = pypenrose.net_testlib.get_center_edge(net.g)
+
+    winding = net.determine_winding(center, edge_node)
+    nose.tools.assert_equal(len(winding), 4)
+    nose.tools.assert_equal(
+        winding[0],
+        edge_node
+    )
+
+    for node in winding:
+        nose.tools.assert_in(node, net.g)
+
+
+def test_compute_angles():
+    net = pypenrose.net_testlib.get_simple_net()
+    center, edge_node = pypenrose.net_testlib.get_center_edge(net.g)
+
+    # net.compute_angles(center, edge_node)

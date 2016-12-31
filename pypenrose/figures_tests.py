@@ -33,7 +33,7 @@ def test_PDFSurfaceWrapper():
 def test_draw_tile():
     # Pull out a node to draw from and the center
     net = pypenrose.net_testlib.get_simple_net()
-    center, edge_node = pypenrose.net_testlib.get_center_edge(net)
+    center, edge_node = pypenrose.net_testlib.get_center_edge(net.g)
 
     ctx_mock = MagicMock()
     move_to_mock = ctx_mock.move_to

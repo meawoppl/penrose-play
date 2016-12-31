@@ -3,6 +3,7 @@ import math
 import networkx as nx
 
 import pypenrose.line
+import pypenrose.util
 
 
 def ordered_line_pair(line1, line2):
@@ -85,19 +86,37 @@ def angle_between_nodes(i1, i2, i3):
 
     val = math.atan2(det, dot)
 
-    # Wrap the +- to 0-2pi
+    # [-180, 180) -> [0, 2pi)
     return val if val >= 0 else ((2 * math.pi) + val)
 
 
-def determine_winding(graph, center_node, spoke_node):
-    undirected = nx.Graph(graph)
-    neighbors = undirected.neighbors(center_node)
+class Net:
+    def __init__(self, list_of_lines):
+        self.g = gridlines_to_gridgraph(list_of_lines)
 
-    def angle_wrt_to(other_node):
-        i1 = undirected.node[spoke_node]["intersection"]
-        i2 = undirected.node[center_node]["intersection"]
-        i3 = undirected.node[other_node]["intersection"]
+    def _get_intersection(self, node):
+        return self.g.node[node]["intersection"]
 
-        return angle_between_nodes(i1, i2, i3)
+    def determine_winding(self, center_node, spoke_node):
+        undirected = nx.Graph(self.g)
+        neighbors = undirected.neighbors(center_node)
+        assert spoke_node in neighbors, "Spoke node not connected to the center"
 
-    return list(sorted(neighbors, key=angle_wrt_to))
+        def angle_wrt_to(other_node):
+            i1 = self._get_intersection(spoke_node)
+            i2 = self._get_intersection(center_node)
+            i3 = self._get_intersection(other_node)
+
+            return angle_between_nodes(i1, i2, i3)
+
+        return list(sorted(neighbors, key=angle_wrt_to))
+
+    def compute_angles(self, center_node, spoke_node):
+        winding = self.determine_winding(center_node, spoke_node)
+
+        angles = []
+        for n1, n2 in pypenrose.util.rolled_loop_iterator(winding):
+            print(n1, n2)
+            a = angle_between_nodes(n1, center_node, n2)
+            angles.append(a)
+        return angles
