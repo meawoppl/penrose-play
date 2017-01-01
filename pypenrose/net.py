@@ -149,6 +149,6 @@ class Net:
         # First line drawn crosses the from_node - tile_node edge
         ordered_nodes = self.determine_winding(tile_node, from_node)
 
-        for n1, n2 in pypenrose.util.rolled_loop_iterator(ordered_nodes):
+        for n1, n2 in pypenrose.util.rolled_loop_iterator(ordered_nodes, 2):
             dx, dy = self.get_edge_dx_dy(n1, n2)
             ctx.rel_line_to(dx, dy)

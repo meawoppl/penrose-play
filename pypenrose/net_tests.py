@@ -1,5 +1,6 @@
 import math
 
+from mock import MagicMock
 import nose.tools
 
 from pypenrose.line import Line
@@ -102,3 +103,26 @@ def test_get_primary_spoke():
         net.g.node[spoke_node]["intersection"],
         (1.0, 0.0)
     )
+
+
+def test_draw_tile():
+    # Pull out a node to draw from and the center
+    net = pypenrose.net_testlib.get_simple_net()
+    center, edge_node = pypenrose.net_testlib.get_center_edge(net.g)
+
+    ctx_mock = MagicMock()
+    line_to_mock = ctx_mock.rel_line_to
+
+    net.draw_tile(ctx_mock, edge_node, center)
+
+    # Should make 4 relative line calls
+    nose.tools.assert_equal(line_to_mock.call_count, 4)
+
+    # Line calls should close the graphing loop
+    x_sum, y_sum = 0, 0
+    for (dx, dy), _ in line_to_mock.call_args_list:
+        x_sum += dx
+        y_sum += dy
+
+    nose.tools.assert_equal(x_sum, 0)
+    nose.tools.assert_equal(y_sum, 0)
