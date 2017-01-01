@@ -89,3 +89,16 @@ def test_compute_angles():
     # For the square mesh, all angles should be 90
     for angle in net.compute_angles(center, edge_node):
         nose.tools.assert_equal(angle, math.pi / 2)
+
+
+def test_get_primary_spoke():
+    net = pypenrose.net_testlib.get_simple_net()
+    center, edge_node = pypenrose.net_testlib.get_center_edge(net.g)
+
+    # Graph directions should point up in x and y
+    # Y is CCW from X, so X sorts first
+    spoke_node = net.get_primary_spoke(center)
+    nose.tools.assert_equal(
+        net.g.node[spoke_node]["intersection"],
+        (1.0, 0.0)
+    )

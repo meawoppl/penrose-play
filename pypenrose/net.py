@@ -118,3 +118,14 @@ class Net:
             a = self._angle_between_nodes(n1, center_node, n2)
             angles.append(a)
         return angles
+
+    def get_primary_spoke(self, center_node):
+        out_nodes = self.g.successors(center_node)
+        assert len(out_nodes) == 2, "Missing spokes!"
+        out1, out2 = out_nodes
+        angle = self._angle_between_nodes(out1, center_node, out2)
+
+        if angle < math.pi:
+            return out1
+        else:
+            return out2
