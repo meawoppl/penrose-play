@@ -36,10 +36,17 @@ def test_draw_tile():
     center, edge_node = pypenrose.net_testlib.get_center_edge(net.g)
 
     ctx_mock = MagicMock()
-    move_to_mock = ctx_mock.move_to
-    line_to_mock = ctx_mock.line_to
+    line_to_mock = ctx_mock.rel_line_to
 
-    # figures.draw_tile(net, edge_node, center, ctx_mock)
+    net.draw_tile(ctx_mock, edge_node, center)
 
-    # nose.tools.assert_equal(line_to_mock.call_count, 4)
-    # nose.tools.assert_equal(move_to_mock.call_count, 1)
+    # Should make 4 relative line calls
+    nose.tools.assert_equal(line_to_mock.call_count, 4)
+
+    # Line calls should close the graphing loop
+    x_sum, y_sum = 0, 0
+    for (dx, dy), _ in line_to_mock.call_args_list:
+        x_sum += dx
+        y_sum += dy
+    nose.tools.assert_equal(x_sum, 0)
+    nose.tools.assert_equal(y_sum, 0)

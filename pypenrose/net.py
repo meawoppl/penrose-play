@@ -129,3 +129,26 @@ class Net:
             return out1
         else:
             return out2
+
+    def get_edge_dx_dy(self, node1, node2, normalize=True):
+        x1, y1 = self._get_intersection(node1)
+        x2, y2 = self._get_intersection(node2)
+
+        dx = x2 - x1
+        dy = y2 - y1
+        if normalize:
+            mag = math.sqrt(dx**2 + dy**2)
+            return dx / mag, dy / mag
+        else:
+            return dx, dy
+
+    def draw_tile(self, ctx, from_node, tile_node):
+        assert from_node in self.g
+        assert tile_node in self.g
+
+        # First line drawn crosses the from_node - tile_node edge
+        ordered_nodes = self.determine_winding(tile_node, from_node)
+
+        for n1, n2 in pypenrose.util.rolled_loop_iterator(ordered_nodes):
+            dx, dy = self.get_edge_dx_dy(n1, n2)
+            ctx.rel_line_to(dx, dy)
