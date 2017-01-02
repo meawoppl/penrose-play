@@ -198,6 +198,9 @@ class Net:
             # Advance the cursor...
             ordered_nodes = self.determine_winding(next_node, current_node)
 
+            if len(ordered_nodes) < 4:
+                return
+
             for n1, n2 in pypenrose.util.rolled_loop_iterator(ordered_nodes, 2):
                 dx, dy = self.get_edge_dx_dy(n1, n2)
                 ctx.rel_move_to(dx, dy)

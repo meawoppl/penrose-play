@@ -116,6 +116,22 @@ def test_get_line_root():
     nose.tools.assert_equal(len(root_nodes), 5)
 
 
+def _assert_displacement(mock_call, displacement):
+    x_sum, y_sum = 0, 0
+    for (dx, dy), _ in mock_call.call_args_list:
+        x_sum += dx
+        y_sum += dy
+    try:
+        nose.tools.assert_almost_equal(x_sum, displacement[0])
+        nose.tools.assert_almost_equal(y_sum, displacement[1])
+    except AssertionError:
+        print("\n_assert_displacement failure.")
+        print("Call dump follows:")
+        for (dx, dy), _ in mock_call.call_args_list:
+            print("call(", dx, ",", dy, ")")
+        raise
+
+
 def test_draw_tile():
     # Pull out a node to draw from and the center
     net = pypenrose.net_testlib.get_simple_net()
@@ -130,13 +146,7 @@ def test_draw_tile():
     nose.tools.assert_equal(line_to_mock.call_count, 4)
 
     # Line calls should close the graphing loop
-    x_sum, y_sum = 0, 0
-    for (dx, dy), _ in line_to_mock.call_args_list:
-        x_sum += dx
-        y_sum += dy
-
-    nose.tools.assert_equal(x_sum, 0)
-    nose.tools.assert_equal(y_sum, 0)
+    _assert_displacement(line_to_mock, (0, 0))
 
 
 def test_draw_ribbon():
@@ -150,5 +160,9 @@ def test_draw_ribbon():
 
     net.draw_ribbon(ctx_mock, line)
 
-    nose.tools.assert_equal(move_to_mock.call_count, 4)
+    nose.tools.assert_equal(move_to_mock.call_count, 3)
+    _assert_displacement(move_to_mock, (0, 3))
+
+    # These should all be closed loops
     nose.tools.assert_equal(line_to_mock.call_count, 12)
+    _assert_displacement(line_to_mock, (0, 0))
