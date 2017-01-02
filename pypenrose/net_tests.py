@@ -105,6 +105,17 @@ def test_get_primary_spoke():
     )
 
 
+def test_get_line_root():
+    # Pull out a node to draw from and the center
+    net = pypenrose.net_testlib.get_simple_net()
+
+    root_nodes = set()
+    for line in net.lines:
+        root_node = net.get_line_root(line)
+        root_nodes.add(root_node)
+    nose.tools.assert_equal(len(root_nodes), 5)
+
+
 def test_draw_tile():
     # Pull out a node to draw from and the center
     net = pypenrose.net_testlib.get_simple_net()
@@ -128,12 +139,16 @@ def test_draw_tile():
     nose.tools.assert_equal(y_sum, 0)
 
 
-def test_get_line_root():
-    # Pull out a node to draw from and the center
-    net = pypenrose.net_testlib.get_simple_net()
+def test_draw_ribbon():
+    net = pypenrose.net_testlib.get_simple_net(shape=(3, 5))
+    line = net.lines[1]
 
-    root_nodes = set()
-    for line in net.lines:
-        root_node = net.get_line_root(line)
-        root_nodes.add(root_node)
-    assert len(root_nodes) == 5
+    ctx_mock = MagicMock()
+
+    move_to_mock = ctx_mock.rel_move_to
+    line_to_mock = ctx_mock.rel_line_to
+
+    net.draw_ribbon(ctx_mock, line)
+
+    nose.tools.assert_equal(move_to_mock.call_count, 3)
+    nose.tools.assert_equal(line_to_mock.call_count, 12)

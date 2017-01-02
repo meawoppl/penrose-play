@@ -101,6 +101,11 @@ class Net:
         # [-180, 180) -> [0, 2pi)
         return val if val >= 0 else ((2 * math.pi) + val)
 
+    def _all_node_edges(self, node, data=False):
+        ins = self.g.in_edges(nbunch=[node], data=data)
+        outs = self.g.out_edges(nbunch=[node], data=data)
+        return ins + outs
+
     def get_line_root(self, line):
         assert line in self.lines
 
@@ -172,3 +177,31 @@ class Net:
         for n1, n2 in pypenrose.util.rolled_loop_iterator(ordered_nodes, 2):
             dx, dy = self.get_edge_dx_dy(n1, n2)
             ctx.rel_line_to(dx, dy)
+
+    def draw_ribbon(self, ctx, line):
+        current_node = self.get_line_root(line)
+
+        while current_node is not None:
+            # Find the next node in the list
+            neighbors = [n2 for n1, n2, data in self.g.edges_iter(current_node, data=True) if data["line"] == line]
+
+            # If there is no next node, we are done
+            if len(neighbors) == 0:
+                return
+
+            # Draw the tile
+            next_node = neighbors[0]
+            if len(self._all_node_edges(next_node)) < 4:
+                return
+
+            self.draw_tile(ctx, current_node, next_node)
+
+            # Advance the cursor...
+            ordered_nodes = self.determine_winding(next_node, current_node)
+
+            for n1, n2 in pypenrose.util.rolled_loop_iterator(ordered_nodes, 2):
+                dx, dy = self.get_edge_dx_dy(n1, n2)
+                ctx.rel_move_to(dx, dy)
+                break
+
+            current_node = next_node
