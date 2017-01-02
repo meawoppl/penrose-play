@@ -15,7 +15,7 @@ def assert_graph_props(g, *, nodes=None, edges=None):
             nose.tools.assert_equal(len(g.edges()), edges, msg="Edge Count Mismatch")
     except AssertionError:
         print()
-        print("Your graph shape is wrong:")
+        print("Your graph is wrong:")
         print("Nodes:")
         for node in g.nodes():
             print(node)
