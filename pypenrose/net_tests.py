@@ -126,3 +126,14 @@ def test_draw_tile():
 
     nose.tools.assert_equal(x_sum, 0)
     nose.tools.assert_equal(y_sum, 0)
+
+
+def test_get_line_root():
+    # Pull out a node to draw from and the center
+    net = pypenrose.net_testlib.get_simple_net()
+
+    root_nodes = set()
+    for line in net.lines:
+        root_node = net.get_line_root(line)
+        root_nodes.add(root_node)
+    assert len(root_nodes) == 5

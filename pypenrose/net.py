@@ -75,7 +75,8 @@ def sorted_intersection_digraph(main_line, other_lines):
 
 class Net:
     def __init__(self, list_of_lines):
-        self.g = gridlines_to_gridgraph(list_of_lines)
+        self.lines = list_of_lines
+        self.g = gridlines_to_gridgraph(self.lines)
 
     def _get_intersection(self, node):
         return self.g.node[node]["intersection"]
@@ -99,6 +100,25 @@ class Net:
 
         # [-180, 180) -> [0, 2pi)
         return val if val >= 0 else ((2 * math.pi) + val)
+
+    def get_line_root(self, line):
+        assert line in self.lines
+
+        # Go throrugh the edges, find a node on the line
+        node_on_line = None
+        for n1, n2, data in self.g.edges_iter(data=True):
+            if data["line"] == line:
+                node_on_line = n1
+                break
+        assert node_on_line is not None, "No edges found with assoicated Line()"
+
+        # Chase the found node to its base (MRG YUCKY)
+        while True:
+            incoming_edges = self.g.in_edges(nbunch=[node_on_line], data=True)
+            parent_node = [n1 for n1, n2, data in incoming_edges if data["line"] == line]
+            if len(parent_node) == 0:
+                return node_on_line
+            node_on_line = parent_node[0]
 
     def determine_winding(self, center_node, spoke_node):
         undirected = nx.Graph(self.g)
