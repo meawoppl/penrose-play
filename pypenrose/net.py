@@ -189,12 +189,11 @@ class Net:
             if len(neighbors) == 0:
                 return
 
-            # Draw the tile
+            # Nodes near the edge might have drawable nodes in the future
             next_node = neighbors[0]
-            if len(self._all_node_edges(next_node)) < 4:
-                return
-
-            self.draw_tile(ctx, current_node, next_node)
+            if len(self._all_node_edges(next_node)) == 4:
+                # Draw the tile
+                self.draw_tile(ctx, current_node, next_node)
 
             # Advance the cursor...
             ordered_nodes = self.determine_winding(next_node, current_node)

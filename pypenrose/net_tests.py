@@ -150,5 +150,5 @@ def test_draw_ribbon():
 
     net.draw_ribbon(ctx_mock, line)
 
-    nose.tools.assert_equal(move_to_mock.call_count, 3)
+    nose.tools.assert_equal(move_to_mock.call_count, 4)
     nose.tools.assert_equal(line_to_mock.call_count, 12)
