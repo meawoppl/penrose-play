@@ -36,7 +36,7 @@ def assert_graph_props(g, *, nodes=None, edges=None):
         assert isinstance(parent_line, pypenrose.line.Line)
 
 
-def get_simple_net():
+def get_simple_net(shape=(3, 3)):
     # This is a pure x-y edged net looking like this:
     #
     #   0-0-0
@@ -45,8 +45,8 @@ def get_simple_net():
     #   | | |
     #   0-0-0
 
-    horiz = get_1d_gridlines((1, 0), 0, 3)
-    verti = get_1d_gridlines((0, 1), 0, 3)
+    horiz = get_1d_gridlines((1, 0), 0, shape[0])
+    verti = get_1d_gridlines((0, 1), 0, shape[1])
     return pypenrose.net.Net(horiz + verti)
 
 
