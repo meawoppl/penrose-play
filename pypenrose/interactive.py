@@ -1,6 +1,6 @@
 import pylab as plt
 
-from pypenrose.figures import plot_line_inside_bounds
+import pypenrose.figures
 import pypenrose.space
 import pypenrose.net
 import pypenrose.figures
@@ -13,7 +13,7 @@ def show_gridlines():
 
     # All lines inside this list should be parallel
     for l1 in gl_list:
-        plot_line_inside_bounds(l1)
+        pypenrose.figures.plot_line_inside_bounds(l1)
     plt.show()
 
 
@@ -22,7 +22,7 @@ def show_nd_gridlines():
     linesets = pypenrose.space.get_nd_grid(5, ndim=5)
     for lineset in linesets:
         for line in lineset:
-            plot_line_inside_bounds(line)
+            pypenrose.figures.plot_line_inside_bounds(line)
 
     plt.show()
 
@@ -37,6 +37,17 @@ def plot_intersection_graph():
     pypenrose.figures.plot_gridgraph(line_isect_graph)
 
 
-pypenrose.figures.plot_gridgraph(
-    pypenrose.net_testlib.get_simple_net()
-)
+def draw_tile():
+    # Pull out a node to draw from and the center
+    net = pypenrose.net_testlib.get_simple_net()
+    center, edge_node = pypenrose.net_testlib.get_center_edge(net.g)
+
+    f = open("test.pdf", "wb")
+    with pypenrose.figures.PDFSurfaceWrapper(f) as ctx:
+        ctx.move_to(0, 0)
+        ctx.set_source_rgba(0, 0, 0, 0.5)
+        ctx.scale(20, 20)
+        net.draw_tile(ctx, edge_node, center)
+        ctx.stroke()
+
+draw_tile()
