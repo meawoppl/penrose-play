@@ -50,4 +50,19 @@ def draw_tile():
         net.draw_tile(ctx, edge_node, center)
         ctx.stroke()
 
-draw_tile()
+
+def draw_ribbon():
+    net = pypenrose.net_testlib.get_simple_net(shape=(3, 5))
+    line = net.lines[1]
+
+    f = open("test.pdf", "wb")
+    with pypenrose.figures.PDFSurfaceWrapper(f) as ctx:
+        ctx.move_to(300, 300)
+        ctx.set_source_rgba(0, 0, 0, 0.5)
+        ctx.scale(20, 20)
+
+        net.draw_ribbon(ctx, line)
+
+        ctx.stroke()
+
+draw_ribbon()

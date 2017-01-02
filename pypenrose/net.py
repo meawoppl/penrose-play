@@ -177,6 +177,7 @@ class Net:
         for n1, n2 in pypenrose.util.rolled_loop_iterator(ordered_nodes, 2):
             dx, dy = self.get_edge_dx_dy(n1, n2)
             ctx.rel_line_to(dx, dy)
+        ctx.stroke()
 
     def draw_ribbon(self, ctx, line):
         current_node = self.get_line_root(line)
@@ -194,6 +195,9 @@ class Net:
             if len(self._all_node_edges(next_node)) == 4:
                 # Draw the tile
                 self.draw_tile(ctx, current_node, next_node)
+            else:
+                current_node = next_node
+                continue
 
             # Advance the cursor...
             ordered_nodes = self.determine_winding(next_node, current_node)
