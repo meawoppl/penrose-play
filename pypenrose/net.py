@@ -177,26 +177,31 @@ class Net:
         for n1, n2 in pypenrose.util.rolled_loop_iterator(ordered_nodes, 2):
             dx, dy = self.get_edge_dx_dy(n1, n2)
             ctx.rel_line_to(dx, dy)
-        ctx.stroke()
 
-    def draw_ribbon(self, ctx, line):
+    def _walk_line_edges(self, line):
         current_node = self.get_line_root(line)
-
-        while current_node is not None:
+        while True:
             # Find the next node in the list
             neighbors = [n2 for n1, n2, data in self.g.edges_iter(current_node, data=True) if data["line"] == line]
 
             # If there is no next node, we are done
             if len(neighbors) == 0:
-                return
+                break
 
-            # Nodes near the edge might have drawable nodes in the future
             next_node = neighbors[0]
+            yield current_node, next_node
+            current_node = next_node
+
+    def draw_ribbon(self, ctx, line):
+
+        for current_node, next_node in self._walk_line_edges(line):
             if len(self._all_node_edges(next_node)) == 4:
                 # Draw the tile
+                cp = ctx.get_current_point()
                 self.draw_tile(ctx, current_node, next_node)
+                ctx.stroke()
+                ctx.move_to(*cp)
             else:
-                current_node = next_node
                 continue
 
             # Advance the cursor...
@@ -209,5 +214,3 @@ class Net:
                 dx, dy = self.get_edge_dx_dy(n1, n2)
                 ctx.rel_move_to(dx, dy)
                 break
-
-            current_node = next_node
