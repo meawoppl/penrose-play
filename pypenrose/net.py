@@ -172,11 +172,17 @@ class Net:
         assert tile_node in self.g
 
         # First line drawn crosses the from_node - tile_node edge
-        ordered_nodes = self.determine_winding(tile_node, from_node)
+        ordered_nodes = pypenrose.util.roll(self.determine_winding(tile_node, from_node), 1)
 
-        for n1, n2 in pypenrose.util.rolled_loop_iterator(ordered_nodes, 2):
+        assert len(ordered_nodes) == 4
+
+        for n, (n1, n2) in enumerate(pypenrose.util.rolled_loop_iterator(ordered_nodes, 2)):
             dx, dy = self.get_edge_dx_dy(n1, n2)
             ctx.rel_line_to(dx, dy)
+            if n == 1:
+                pt = ctx.get_current_point()
+        ctx.stroke()
+        ctx.move_to(*pt)
 
     def _walk_line_edges(self, line):
         current_node = self.get_line_root(line)
@@ -197,10 +203,10 @@ class Net:
         for current_node, next_node in self._walk_line_edges(line):
             if len(self._all_node_edges(next_node)) == 4:
                 # Draw the tile
-                cp = ctx.get_current_point()
+                # cp = ctx.get_current_point()
                 self.draw_tile(ctx, current_node, next_node)
-                ctx.stroke()
-                ctx.move_to(*cp)
+                # ctx.stroke()
+                # ctx.move_to(*cp)
             else:
                 continue
 
