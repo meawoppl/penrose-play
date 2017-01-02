@@ -79,5 +79,6 @@ def get_center_edge(net):
 
 
 def test_get_simple_net():
-    n = get_simple_net()
-    assert_graph_props(n.g, nodes=9, edges=12)
+    for i in range(3, 8):
+        n = get_simple_net(shape=(i, i))
+        assert_graph_props(n.g, nodes=i**2, edges=i * (i - 1) * 2)
