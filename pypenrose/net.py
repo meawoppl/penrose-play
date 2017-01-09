@@ -106,16 +106,23 @@ class Net:
         outs = self.g.out_edges(nbunch=[node], data=data)
         return ins + outs
 
-    def get_line_root(self, line):
-        assert line in self.lines
+    def _node_degree(self, node):
+        return len(self._all_node_edges(node))
 
-        # Go throrugh the edges, find a node on the line
+    def get_node_on_line(self, line):
+        # Go thru the edges, find a node on the line
         node_on_line = None
         for n1, n2, data in self.g.edges_iter(data=True):
             if data["line"] == line:
                 node_on_line = n1
                 break
         assert node_on_line is not None, "No edges found with assoicated Line()"
+        return node_on_line
+
+    def get_line_root(self, line):
+        assert line in self.lines
+
+        node_on_line = self.get_node_on_line(line)
 
         # Chase the found node to its base (MRG YUCKY)
         while True:
@@ -125,15 +132,21 @@ class Net:
                 return node_on_line
             node_on_line = parent_node[0]
 
+    # Note to sober matty:  This function returns nodes in an order
+    # which dosen't necessarily have spoke_node first.  See added assertion
+    # TODO: fixme
     def determine_winding(self, center_node, spoke_node):
         undirected = nx.Graph(self.g)
         neighbors = undirected.neighbors(center_node)
         assert spoke_node in neighbors, "Spoke node not connected to the center"
 
         def angle_wrt_to(other_node):
-            return self._angle_between_nodes(spoke_node, center_node, other_node)
+            ang = self._angle_between_nodes(spoke_node, center_node, other_node)
+            return ang
 
-        return list(sorted(neighbors, key=angle_wrt_to))
+        wound = list(sorted(neighbors, key=angle_wrt_to))
+        assert wound[0] == spoke_node, "Node order flummoxed."
+        return wound
 
     def compute_angles(self, center_node, spoke_node):
         winding = self.determine_winding(center_node, spoke_node)
@@ -184,7 +197,7 @@ class Net:
         ctx.stroke()
         ctx.move_to(*pt)
 
-    def _walk_line_edges(self, line):
+    def _walk_line_edges(self, line, ctx=None):
         current_node = self.get_line_root(line)
         while True:
             # Find the next node in the list
@@ -196,27 +209,36 @@ class Net:
 
             next_node = neighbors[0]
             yield current_node, next_node
+
+            if ctx is not None:
+                self.move_to_next_node(ctx, current_node, next_node)
+
             current_node = next_node
 
-    def draw_ribbon(self, ctx, line):
+    def move_to_next_node(self, ctx, n1, n2):
+        dx, dy = self.get_edge_dx_dy(n1, n2)
+        ctx.rel_move_to(dx, dy)
 
-        for current_node, next_node in self._walk_line_edges(line):
-            if len(self._all_node_edges(next_node)) == 4:
-                # Draw the tile
-                # cp = ctx.get_current_point()
-                self.draw_tile(ctx, current_node, next_node)
-                # ctx.stroke()
-                # ctx.move_to(*cp)
-            else:
+    def draw_ribbon(self, ctx, line):
+        """
+        Draw all of the nodes on a given line
+
+        Arguments:
+            ctx {cairo.Context} -- A cairo drawing context
+            line {pypenrose.Line} -- A line instance
+        """
+        for current_node, next_node in self._walk_line_edges(line, ctx=ctx):
+            node_degree = self._node_degree(next_node)
+            if node_degree != 4:
                 continue
 
-            # Advance the cursor...
-            ordered_nodes = self.determine_winding(next_node, current_node)
+            # Draw the tile
+            self.draw_tile(ctx, current_node, next_node)
 
-            if len(ordered_nodes) < 4:
-                return
+            # # Advance the cursor...
+            # ordered_nodes = self.determine_winding(next_node, current_node)
 
-            for n1, n2 in pypenrose.util.rolled_loop_iterator(ordered_nodes, 2):
-                dx, dy = self.get_edge_dx_dy(n1, n2)
-                ctx.rel_move_to(dx, dy)
-                break
+            # if node_degree < 4:
+            #     return
+
+            # self.move_to_next_node(ctx, ordered_nodes[0], ordered_nodes[2])

@@ -1,3 +1,4 @@
+import cairo
 import pylab as plt
 
 import pypenrose.figures
@@ -29,12 +30,14 @@ def show_nd_gridlines():
 
 # Plot the graph of P1
 def plot_intersection_graph():
-    lol_of_lines = pypenrose.space.get_nd_grid_p1(2)
+    lol_of_lines = pypenrose.space.get_nd_grid_p1(5)
     flat_lines = sum(lol_of_lines, [])
 
-    line_isect_graph = pypenrose.net.gridlines_to_gridgraph(flat_lines)
+    net = pypenrose.net.Net(flat_lines)
 
-    pypenrose.figures.plot_gridgraph(line_isect_graph)
+    pypenrose.figures.plot_gridgraph(net.g)
+
+# plot_intersection_graph()
 
 
 def draw_tile():
@@ -52,11 +55,10 @@ def draw_tile():
 
 
 def draw_ribbon():
-    lol_of_lines = pypenrose.space.get_nd_grid_p1(7)
+    lol_of_lines = pypenrose.space.get_nd_grid_m1(7)
     flat_lines = sum(lol_of_lines, [])
 
     net = pypenrose.net.Net(flat_lines)
-
 
     # net = pypenrose.net_testlib.get_simple_net(shape=(3, 5))
     # line = net.lines[1]
@@ -66,11 +68,14 @@ def draw_ribbon():
         ctx.move_to(300, 300)
         ctx.set_source_rgba(0, 0, 1, 0.3)
         ctx.set_line_width(0.1)
-        ctx.scale(20, 20)
+        ctx.set_line_cap(cairo.LINE_CAP_ROUND)
+        ctx.set_line_join(cairo.LINE_JOIN_ROUND)
+        ctx.scale(10, 10)
         for n, line in enumerate(net.lines):
             # ctx.set_line_width(0.1 * ((n+1)*2))
-            ctx.move_to(15, 15)
+            ctx.move_to(30, 30)
             net.draw_ribbon(ctx, line)
+
         ctx.stroke()
 
 draw_ribbon()

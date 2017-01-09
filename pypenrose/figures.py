@@ -69,10 +69,10 @@ def plot_gridgraph(graph):
 
         plt.plot([pt1[0], pt2[0]], [pt1[1], pt2[1]], color=color, lw=3, alpha=.3)
 
-    for node, node_data in graph.nodes_iter(data=True):
-        if graph.degree(node) == 4:
-            draw_tile(graph, node)
-        break
+    # for node, node_data in graph.nodes_iter(data=True):
+    #     if graph.degree(node) == 4:
+    #         draw_tile(graph, node)
+    #     break
 
     plt.axis([-10, 10, -10, 10])
     plt.show()
@@ -81,7 +81,6 @@ def plot_gridgraph(graph):
 def draw_tile(graph, node, from_node, ctx):
     surrounding = []
     for adj in graph[node]:
-        print("\t", adj)
         s = graph.node[adj]["intersection"]
         surrounding.append(s)
 

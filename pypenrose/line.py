@@ -126,6 +126,9 @@ class Line:
     def __str__(self):
         return "Line: %0.2fx + %0.2fy = %0.2f" % (self.x, self.y, self.i)
 
+    def __repr__(self):
+        return self.__str__()
+
     def __hash__(self):
         return (self.x, self.y, self.i).__hash__()
 

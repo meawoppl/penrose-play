@@ -105,6 +105,14 @@ def test_get_primary_spoke():
     )
 
 
+def test_get_node_on_line():
+    # Pull out a node to draw from and the center
+    net = pypenrose.net_testlib.get_simple_net()
+
+    for line in net.lines:
+        net.get_node_on_line(line)
+
+
 def test_get_line_root():
     # Pull out a node to draw from and the center
     net = pypenrose.net_testlib.get_simple_net()
@@ -160,8 +168,9 @@ def test_draw_ribbon():
 
     net.draw_ribbon(ctx_mock, line)
 
-    nose.tools.assert_equal(move_to_mock.call_count, 3)
-    _assert_displacement(move_to_mock, (0, 3))
+    # 3 moves between tiles, and one past the end as the _edge iter loop closes
+    nose.tools.assert_equal(move_to_mock.call_count, 3 + 1)
+    _assert_displacement(move_to_mock, (0, 3 + 1))
 
     # These should all be closed loops
     nose.tools.assert_equal(line_to_mock.call_count, 12)

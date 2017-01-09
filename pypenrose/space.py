@@ -42,7 +42,10 @@ def get_nd_grid(n_lines, ndim=5, offsets=None):
 
     return lines_lists
 
-
+# NOTE TO SOBER MATTY:
+# I am unsure about the signs of the below coeffs' on P1
+# I thought initially it was a typesetting error in the site
+# TODO: Consult Deburijin's reference on the matter
 def get_nd_grid_p1(n_lines):
     t2 = +(np.sqrt(5) - 1) / 4
     t3 = -(np.sqrt(5) + 1) / 4
@@ -52,6 +55,18 @@ def get_nd_grid_p1(n_lines):
     v = (1, t2, t3, t4, t5)
 
     return get_nd_grid(n_lines, ndim=5, offsets=v)
+
+
+def get_nd_grid_m1(n_lines):
+    t2 = np.sqrt(2) / np.sqrt(9)
+    t3 = np.sqrt(3) / np.sqrt(9)
+    t4 = np.sqrt(5) / np.sqrt(9)
+    t5 = np.sqrt(7) / np.sqrt(9)
+
+    v = (1, t2, t3, t4, t5)
+
+    return get_nd_grid(n_lines, ndim=5, offsets=v)
+
 
 
 def dense_intersection(lines1, lines2):
