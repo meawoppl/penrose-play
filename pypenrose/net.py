@@ -119,22 +119,22 @@ class Net:
         assert node_on_line is not None, "No edges found with assoicated Line()"
         return node_on_line
 
-    def get_line_root(self, line):
+    def get_line_root(self, line, ctx=None):
         assert line in self.lines
-
         node_on_line = self.get_node_on_line(line)
 
         # Chase the found node to its base (MRG YUCKY)
         while True:
             incoming_edges = self.g.in_edges(nbunch=[node_on_line], data=True)
             parent_node = [n1 for n1, n2, data in incoming_edges if data["line"] == line]
+
+            if ctx is not None:
+                self.move_to_next_node(ctx, node_on_line, parent_node)
+
             if len(parent_node) == 0:
                 return node_on_line
             node_on_line = parent_node[0]
 
-    # Note to sober matty:  This function returns nodes in an order
-    # which dosen't necessarily have spoke_node first.  See added assertion
-    # TODO: fixme
     def determine_winding(self, center_node, spoke_node):
         undirected = nx.Graph(self.g)
         neighbors = undirected.neighbors(center_node)
@@ -169,6 +169,17 @@ class Net:
             return out2
 
     def get_edge_dx_dy(self, node1, node2, normalize=True):
+        """
+        Arguments:
+            node1 {[type]} -- A node in the networkx.Digraph self.g
+            node2 {[type]} -- A node in the networkx.Digraph self.g
+
+        Keyword Arguments:
+            normalize {bool} -- Whether or not to normalize the diplacement (default: {True})
+
+        Returns:
+            (float, float) -- A tuple of Python floats describing the (x, y) dispacement
+        """
         x1, y1 = self._get_intersection(node1)
         x2, y2 = self._get_intersection(node2)
 
@@ -176,11 +187,20 @@ class Net:
         dy = y2 - y1
         if normalize:
             mag = math.sqrt(dx**2 + dy**2)
-            return dx / mag, dy / mag
-        else:
-            return dx, dy
+            dx = dx / mag
+            dy = dy / mag
+
+        return dx, dy
 
     def draw_tile(self, ctx, from_node, tile_node):
+        """
+        Draw a rhombus based on the from node and to node
+
+        Arguments:
+            ctx cairo.Context -- A cairo drawing context with the current point where the drawing starts
+            from_node {object} -- A node in the self.g networkx graph
+            tile_node {[type]} -- A node in the self.g networkx graph
+        """
         assert from_node in self.g
         assert tile_node in self.g
 
@@ -220,13 +240,6 @@ class Net:
         ctx.rel_move_to(dx, dy)
 
     def draw_ribbon(self, ctx, line):
-        """
-        Draw all of the nodes on a given line
-
-        Arguments:
-            ctx {cairo.Context} -- A cairo drawing context
-            line {pypenrose.Line} -- A line instance
-        """
         for current_node, next_node in self._walk_line_edges(line, ctx=ctx):
             node_degree = self._node_degree(next_node)
             if node_degree != 4:
@@ -235,10 +248,5 @@ class Net:
             # Draw the tile
             self.draw_tile(ctx, current_node, next_node)
 
-            # # Advance the cursor...
-            # ordered_nodes = self.determine_winding(next_node, current_node)
-
-            # if node_degree < 4:
-            #     return
-
-            # self.move_to_next_node(ctx, ordered_nodes[0], ordered_nodes[2])
+    def draw_tiling(self, ctx):
+        pass
