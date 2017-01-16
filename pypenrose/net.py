@@ -187,8 +187,8 @@ class Net:
         dy = y2 - y1
         if normalize:
             mag = math.sqrt(dx**2 + dy**2)
-            dx = dx / mag
-            dy = dy / mag
+            dx /= mag
+            dy /= mag
 
         return dx, dy
 
@@ -201,17 +201,22 @@ class Net:
             from_node {object} -- A node in the self.g networkx graph
             tile_node {[type]} -- A node in the self.g networkx graph
         """
-        assert from_node in self.g
-        assert tile_node in self.g
+        assert from_node in self.g, "Source nodes not in graph"
+        assert tile_node in self.g, "Source nodes not in graph"
 
         # First line drawn crosses the from_node - tile_node edge
         ordered_nodes = pypenrose.util.roll(self.determine_winding(tile_node, from_node), 1)
 
         assert len(ordered_nodes) == 4
+        assert ordered_nodes[-1] == from_node
 
+        print("Drawing Tile, ", end="")
         for n, (n1, n2) in enumerate(pypenrose.util.rolled_loop_iterator(ordered_nodes, 2)):
             dx, dy = self.get_edge_dx_dy(n1, n2)
+
             ctx.rel_line_to(dx, dy)
+            print("(", dx, dy, ")", end="")
+
             if n == 1:
                 pt = ctx.get_current_point()
         ctx.stroke()
@@ -237,16 +242,31 @@ class Net:
 
     def move_to_next_node(self, ctx, n1, n2):
         dx, dy = self.get_edge_dx_dy(n1, n2)
+        # Debug
+        print(dx, dy)
         ctx.rel_move_to(dx, dy)
 
-    def draw_ribbon(self, ctx, line):
-        for current_node, next_node in self._walk_line_edges(line, ctx=ctx):
-            node_degree = self._node_degree(next_node)
-            if node_degree != 4:
-                continue
+    def draw_dot(self, ctx, color=(1, 0, 0)):
+        x, y = ctx.get_current_point()
+        ctx.save()
+        ctx.set_source_rgb(*color)
+        ctx.arc(x, y, 0.1, 0, 2 * 3.141)
+        ctx.stroke()
+        ctx.restore()
+        ctx.move_to(x, y)
 
+    def draw_ribbon(self, ctx, line, debug_markers=False):
+        for current_node, next_node in self._walk_line_edges(line, ctx=ctx):
+            if self._node_degree(next_node) != 4:
+                continue
             # Draw the tile
+            if debug_markers:
+                self.draw_dot(ctx, (1, 0, 0))
+
             self.draw_tile(ctx, current_node, next_node)
+
+            if debug_markers:
+                self.draw_dot(ctx, (0, 1, 0))
 
     def draw_tiling(self, ctx):
         pass
