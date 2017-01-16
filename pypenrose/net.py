@@ -210,19 +210,17 @@ class Net:
         assert len(ordered_nodes) == 4
         assert ordered_nodes[-1] == from_node
 
-        print("Drawing Tile, ", end="")
         for n, (n1, n2) in enumerate(pypenrose.util.rolled_loop_iterator(ordered_nodes, 2)):
             dx, dy = self.get_edge_dx_dy(n1, n2)
 
             ctx.rel_line_to(dx, dy)
-            print("(", dx, dy, ")", end="")
 
-            if n == 1:
+            if n == 0:
                 pt = ctx.get_current_point()
         ctx.stroke()
         ctx.move_to(*pt)
 
-    def _walk_line_edges(self, line, ctx=None):
+    def _walk_line_edges(self, line):
         current_node = self.get_line_root(line)
         while True:
             # Find the next node in the list
@@ -235,15 +233,10 @@ class Net:
             next_node = neighbors[0]
             yield current_node, next_node
 
-            if ctx is not None:
-                self.move_to_next_node(ctx, current_node, next_node)
-
             current_node = next_node
 
     def move_to_next_node(self, ctx, n1, n2):
         dx, dy = self.get_edge_dx_dy(n1, n2)
-        # Debug
-        print(dx, dy)
         ctx.rel_move_to(dx, dy)
 
     def draw_dot(self, ctx, color=(1, 0, 0)):
@@ -256,7 +249,7 @@ class Net:
         ctx.move_to(x, y)
 
     def draw_ribbon(self, ctx, line, debug_markers=False):
-        for current_node, next_node in self._walk_line_edges(line, ctx=ctx):
+        for current_node, next_node in self._walk_line_edges(line):
             if self._node_degree(next_node) != 4:
                 continue
             # Draw the tile

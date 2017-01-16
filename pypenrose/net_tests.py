@@ -163,14 +163,10 @@ def test_draw_ribbon():
 
     ctx_mock = MagicMock()
 
-    move_to_mock = ctx_mock.rel_move_to
+    move_to_mock = ctx_mock.move_to
     line_to_mock = ctx_mock.rel_line_to
 
     net.draw_ribbon(ctx_mock, line)
-
-    # 3 moves between tiles, and one past the end as the _edge iter loop closes
-    nose.tools.assert_equal(move_to_mock.call_count, 3 + 1)
-    _assert_displacement(move_to_mock, (0, 3 + 1))
 
     # These should all be closed loops
     nose.tools.assert_equal(line_to_mock.call_count, 12)

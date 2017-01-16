@@ -54,8 +54,8 @@ def draw_tile():
         ctx.stroke()
 
 
-def draw_ribbon():
-    lol_of_lines = pypenrose.space.get_nd_grid_m1(4)
+def draw_ribbons():
+    lol_of_lines = pypenrose.space.get_nd_grid_m1(9)
     flat_lines = sum(lol_of_lines, [])
 
     net = pypenrose.net.Net(flat_lines)
@@ -70,14 +70,16 @@ def draw_ribbon():
         ctx.set_line_width(0.1)
         ctx.set_line_cap(cairo.LINE_CAP_ROUND)
         ctx.set_line_join(cairo.LINE_JOIN_ROUND)
-        ctx.scale(10, 10)
+        ctx.scale(5, 5)
         for n, line in enumerate(net.lines):
             # ctx.set_line_width(0.1 * ((n+1)*2))
-            ctx.move_to(30, 10 + 10 * n)
+            x = 25 + (20 * (n // 7))
+            y = 20 + (20 * (n % 7))
+            ctx.move_to(x, y)
             net.draw_ribbon(ctx, line, debug_markers=True)
 
-            if n == 3:
-                break
+            # if n == 3:
+            #     break
         ctx.stroke()
 
-draw_ribbon()
+draw_ribbons()
